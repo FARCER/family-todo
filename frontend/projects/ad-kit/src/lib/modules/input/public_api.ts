@@ -1,2 +1,2 @@
 export * from './input.module'
-export * from './input/input.component'
+export * from './input.component'
