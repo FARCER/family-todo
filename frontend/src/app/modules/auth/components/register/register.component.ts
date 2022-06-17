@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SupabaseService } from '../../../../shared/services/supabase.service';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'ad-register',
@@ -24,15 +25,16 @@ export class RegisterComponent implements OnInit {
     })
   }
 
-  public async submit(e: any): Promise<any> {
+  public submit(): void {
     const login: string = this.form.value.login;
     const password: string = this.form.value.password;
 
-    await this.supabaseService.register(login, password).then(
+    from(this.supabaseService.register(login, password)).subscribe(
       (res) => {
         console.log(res);
       }
     )
+
   }
 
 }

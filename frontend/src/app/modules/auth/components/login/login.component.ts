@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SupabaseService } from '../../../../shared/services/supabase.service';
+import { from } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ad-login',
@@ -13,7 +15,8 @@ export class LoginComponent implements OnInit {
   public form: FormGroup;
 
   constructor(
-    private readonly supabaseService: SupabaseService
+    private readonly supabaseService: SupabaseService,
+    private router: Router
   ) {
     console.log(this.supabaseService.session)
   }
@@ -25,21 +28,15 @@ export class LoginComponent implements OnInit {
     })
   }
 
-  public async submit(e: any): Promise<any> {
+  public submit(): void {
     const login: string = this.form.value.login;
     const password: string = String(this.form.value.password);
 
-    await this.supabaseService.login(login, password).then(
+    from(this.supabaseService.login(login, password)).subscribe(
       (res) => {
         console.log(res)
-      }
-    )
-  }
+        this.router.navigate(['/profile'])
 
-  public async logout(): Promise<any> {
-    await this.supabaseService.logout().then(
-      (res) => {
-        console.log(res)
       }
     )
   }
