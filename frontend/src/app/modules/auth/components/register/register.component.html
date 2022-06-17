@@ -1,0 +1,5 @@
+<form (ngSubmit)="submit($event)" [formGroup]="form" class="form">
+  <ui-input [formControlName]="'login'" [label]="'Логин'"></ui-input>
+  <ui-input [formControlName]="'password'" [label]="'Пароль'"></ui-input>
+  <button>Send</button>
+</form>
