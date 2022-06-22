@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
-import { IProfile } from '../../modules/profile/interfaces/profile.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -35,14 +34,16 @@ export class SupabaseService {
       .single();
   }
 
+  public getData(table: string, columns: string, filterById: string = 'id') {
+    return this.supabase
+      .from(table)
+      .select(columns)
+      .eq(filterById, this.user?.id);
+  }
 
-  public updateData(profile: IProfile) {
-    const update = {
-      ...profile,
-      id: this.user?.id,
-      updated_at: new Date(),
-    }
-    return this.supabase.from('profiles').upsert(update)
+
+  public updateData(data: any, table: string) {
+    return this.supabase.from(table).upsert(data)
   }
 
   public register(email: string, password: string) {

@@ -7,6 +7,8 @@ import { ProfileComponent } from './modules/profile/profile/profile.component';
 import { ProfileGuard } from './modules/profile/profile.guard';
 import { IndexPageComponent } from './modules/index-page/index-page/index-page.component';
 import { AuthGuard } from './modules/auth/auth.guard';
+import { TasksGuard } from './modules/tasks/tasks.guard';
+import { TasksListComponent } from './modules/tasks/components/tasks-list/tasks-list.component';
 
 const routes: Routes = [
   {
@@ -25,6 +27,12 @@ const routes: Routes = [
   },
   {
     path: 'profile', component: ProfileComponent, canActivate: [ProfileGuard]
+  },
+  {
+    path: 'tasks', component: TasksListComponent, canActivate: [TasksGuard]
+  },
+  {
+    path: '**', component: IndexPageComponent
   }
 ]
 

@@ -64,7 +64,12 @@ export class ProfileComponent implements OnInit {
       dateOfBirth: this.form.value.dateOfBirth,
       email: this.form.value.email
     }
-    from(this.supabaseService.updateData(profile)).subscribe(
+    const updateData = {
+      ...profile,
+      id: this.supabaseService.user?.id,
+      updated_at: new Date(),
+    }
+    from(this.supabaseService.updateData(updateData, 'profiles')).subscribe(
       (res) => {
         console.log(res);
       }

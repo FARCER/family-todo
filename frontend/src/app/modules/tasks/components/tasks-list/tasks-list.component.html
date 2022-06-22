@@ -1,0 +1,8 @@
+<!--<ad-task *ngFor="let task of tasks" [task]="task"></ad-task>-->
+
+<ng-container *ngIf="tasks$ | async as tasks">
+  <ad-task *ngFor="let task of tasks" [task]="task"></ad-task>
+</ng-container>
+
+
+<ad-create-task></ad-create-task>
