@@ -4,6 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { from, pluck } from 'rxjs';
 import { IProfile } from '../interfaces/profile.interface';
 import { Router } from '@angular/router';
+import { ToastService } from 'ad-kit';
 
 @Component({
   selector: 'ad-profile',
@@ -20,7 +21,8 @@ export class ProfileComponent implements OnInit {
   constructor(
     private readonly supabaseService: SupabaseService,
     private changeDetectorRef: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {
     console.log(this.supabaseService.session)
 
@@ -73,7 +75,8 @@ export class ProfileComponent implements OnInit {
   public logout(): void {
     from(this.supabaseService.logout()).subscribe(
       (res) => {
-        this.router.navigate(['/auth'])
+        this.router.navigate(['/auth']);
+        this.toastService.show({ text: 'Вы успешно вышли из личного кабинета', type: 'success' })
       }
     )
   }

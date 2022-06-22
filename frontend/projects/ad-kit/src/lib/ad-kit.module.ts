@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { InputModule } from './modules/input/input.module';
 import { ToastModule } from './modules/toast/toast.module';
+import { PreloaderModule } from './modules/preloader/preloader.module';
 
 
 @NgModule({
@@ -8,8 +9,9 @@ import { ToastModule } from './modules/toast/toast.module';
   imports: [
     InputModule,
     ToastModule.forRoot(),
+    PreloaderModule,
   ],
-  exports: [InputModule, ToastModule]
+  exports: [InputModule, ToastModule, PreloaderModule]
 })
 export class AdKitModule {
 }

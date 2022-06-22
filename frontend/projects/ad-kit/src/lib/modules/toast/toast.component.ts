@@ -1,17 +1,21 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { TOAST_DATA, ToastData } from './toast-config';
+import { ToastRef } from './toast-ref';
 
 @Component({
   selector: 'ui-toast',
   templateUrl: './toast.component.html',
   styleUrls: ['./toast.component.scss']
 })
-export class ToastComponent implements OnInit {
+export class ToastComponent {
 
-  constructor(@Inject(TOAST_DATA) public readonly data: ToastData) {
+  constructor(
+    private readonly ref: ToastRef,
+    @Inject(TOAST_DATA) public readonly data: ToastData) {
   }
 
-  ngOnInit(): void {
+  public close(): void {
+    this.ref.close();
   }
 
 }
