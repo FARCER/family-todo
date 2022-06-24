@@ -5,6 +5,7 @@ import { TaskComponent } from './components/task/task.component';
 import { CreateTaskComponent } from './components/create-task/create-task.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AdKitModule } from 'ad-kit';
+import { TasksComponent } from './components/tasks/tasks.component';
 
 
 @NgModule({
@@ -12,6 +13,7 @@ import { AdKitModule } from 'ad-kit';
     TasksListComponent,
     TaskComponent,
     CreateTaskComponent,
+    TasksComponent,
   ],
   imports: [
     CommonModule,

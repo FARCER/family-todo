@@ -5,10 +5,10 @@ import { LoginComponent } from './modules/auth/components/login/login.component'
 import { RegisterComponent } from './modules/auth/components/register/register.component';
 import { ProfileComponent } from './modules/profile/profile/profile.component';
 import { IndexPageComponent } from './modules/index-page/index-page/index-page.component';
-import { TasksListComponent } from './modules/tasks/components/tasks-list/tasks-list.component';
 import { CabinetComponent } from './modules/cabinet/components/cabinet/cabinet.component';
 import { AuthGuard } from './modules/auth/auth.guard';
 import { AfterAuthGuard } from './shared/guards/after-auth.guard';
+import { TasksComponent } from './modules/tasks/components/tasks/tasks.component';
 
 const routes: Routes = [
   {
@@ -37,7 +37,7 @@ const routes: Routes = [
         path: 'profile', component: ProfileComponent,
       },
       {
-        path: 'tasks', component: TasksListComponent
+        path: 'tasks', component: TasksComponent
       }
     ]
   },
