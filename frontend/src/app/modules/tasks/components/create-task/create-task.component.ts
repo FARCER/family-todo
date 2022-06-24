@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SupabaseService } from '../../../../shared/services/supabase.service';
 import { from } from 'rxjs';
+import { DataBdService } from '../../../../shared/services/data-bd.service';
+import { UserBdService } from '../../../../shared/services/user-bd.service';
 
 @Component({
   selector: 'ad-create-task',
@@ -13,7 +15,8 @@ export class CreateTaskComponent implements OnInit {
   public form: FormGroup;
 
   constructor(
-    private supabaseService: SupabaseService
+    private dataBdService: DataBdService,
+    private userBdService: UserBdService
   ) {
   }
 
@@ -31,9 +34,9 @@ export class CreateTaskComponent implements OnInit {
     console.log(this.form.value)
     const data = {
       title: this.form.value.title,
-      user_id: this.supabaseService.user?.id
+      user_id: this.userBdService.user?.id
     }
-    from(this.supabaseService.updateData(data, 'todos')).subscribe(
+    from(this.dataBdService.updateData(data, 'todos')).subscribe(
       (res) => {
         console.log(res)
       }

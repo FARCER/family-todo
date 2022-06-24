@@ -4,11 +4,11 @@ import { AuthComponent } from './modules/auth/components/auth/auth.component';
 import { LoginComponent } from './modules/auth/components/login/login.component';
 import { RegisterComponent } from './modules/auth/components/register/register.component';
 import { ProfileComponent } from './modules/profile/profile/profile.component';
-import { ProfileGuard } from './modules/profile/profile.guard';
 import { IndexPageComponent } from './modules/index-page/index-page/index-page.component';
-import { AuthGuard } from './modules/auth/auth.guard';
-import { TasksGuard } from './modules/tasks/tasks.guard';
 import { TasksListComponent } from './modules/tasks/components/tasks-list/tasks-list.component';
+import { CabinetComponent } from './modules/cabinet/components/cabinet/cabinet.component';
+import { AuthGuard } from './modules/auth/auth.guard';
+import { AfterAuthGuard } from './shared/guards/after-auth.guard';
 
 const routes: Routes = [
   {
@@ -25,11 +25,21 @@ const routes: Routes = [
     ],
     canActivate: [AuthGuard],
   },
+  // {
+  //   path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]
+  // },
+  // {
+  //   path: 'tasks', component: TasksListComponent, canActivate: [AuthGuard]
+  // },
   {
-    path: 'profile', component: ProfileComponent, canActivate: [ProfileGuard]
-  },
-  {
-    path: 'tasks', component: TasksListComponent, canActivate: [TasksGuard]
+    path: 'cabinet', component: CabinetComponent, canActivate: [AfterAuthGuard], children: [
+      {
+        path: 'profile', component: ProfileComponent,
+      },
+      {
+        path: 'tasks', component: TasksListComponent
+      }
+    ]
   },
   {
     path: '**', component: IndexPageComponent

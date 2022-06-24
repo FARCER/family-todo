@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { SupabaseService } from '../../../shared/services/supabase.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { from, map, Observable, of, pluck, startWith, switchMap } from 'rxjs';
 import { IProfile } from '../interfaces/profile.interface';
@@ -7,6 +6,9 @@ import { Router } from '@angular/router';
 import { ToastService } from 'ad-kit';
 import { Profile } from '../models/profile.model';
 import { EState } from '../../../shared/enum/EState';
+import { UserBdService } from '../../../shared/services/user-bd.service';
+import { AuthBdService } from '../../../shared/services/auth-bd.service';
+import { DataBdService } from '../../../shared/services/data-bd.service';
 
 @Component({
   selector: 'ad-profile',
@@ -22,12 +24,14 @@ export class ProfileComponent implements OnInit {
 
 
   constructor(
-    private readonly supabaseService: SupabaseService,
+    private userBdService: UserBdService,
+    private authBdService: AuthBdService,
+    private dataBdService: DataBdService,
     private changeDetectorRef: ChangeDetectorRef,
     private router: Router,
     private toastService: ToastService
   ) {
-    console.log(this.supabaseService.session)
+    console.log(this.userBdService.session)
 
   }
 
@@ -43,7 +47,7 @@ export class ProfileComponent implements OnInit {
       switchMap((profile: Profile) => {
         console.log(profile)
         model = profile;
-        return from(this.supabaseService.profile)
+        return from(this.userBdService.profile)
       }),
       pluck('data'),
       map((profile: IProfile) => {
@@ -57,11 +61,11 @@ export class ProfileComponent implements OnInit {
 
   private initForm(profile: IProfile): void {
     this.form = new FormGroup({
-      name: new FormControl(profile.name),
-      surName: new FormControl(profile.surName),
-      patronymic: new FormControl(profile.patronymic),
-      dateOfBirth: new FormControl(profile.dateOfBirth),
-      email: new FormControl(profile.email),
+      name: new FormControl(profile?.name),
+      surName: new FormControl(profile?.surName),
+      patronymic: new FormControl(profile?.patronymic),
+      dateOfBirth: new FormControl(profile?.dateOfBirth),
+      email: new FormControl(profile?.email),
     })
   }
 
@@ -75,10 +79,10 @@ export class ProfileComponent implements OnInit {
     }
     const updateData = {
       ...profile,
-      id: this.supabaseService.user?.id,
+      id: this.userBdService.user?.id,
       updated_at: new Date(),
     }
-    from(this.supabaseService.updateData(updateData, 'profiles')).subscribe(
+    from(this.dataBdService.updateData(updateData, 'profiles')).subscribe(
       (res) => {
         console.log(res);
       }
@@ -87,9 +91,9 @@ export class ProfileComponent implements OnInit {
   }
 
   public logout(): void {
-    from(this.supabaseService.logout()).subscribe(
+    from(this.authBdService.logout()).subscribe(
       (res) => {
-        this.router.navigate(['/auth']);
+        this.router.navigate(['']);
         this.toastService.show({ text: 'Вы успешно вышли из личного кабинета', type: 'success' })
       }
     )

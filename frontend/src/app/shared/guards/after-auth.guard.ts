@@ -1,27 +1,27 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, RouterStateSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { SupabaseService } from '../../shared/services/supabase.service';
+import { UserBdService } from '../services/user-bd.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProfileGuard implements CanActivate, CanActivateChild {
+export class AfterAuthGuard implements CanActivate, CanActivateChild {
   constructor(
-    private readonly supabaseService: SupabaseService
+    private readonly userBdService: UserBdService
   ) {
   }
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> {
-    return of(Boolean(this.supabaseService.session));
+    return of(Boolean(this.userBdService.session));
   }
 
   canActivateChild(
     childRoute: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> {
-    return of(Boolean(this.supabaseService.session));
+    return of(Boolean(this.userBdService.session));
   }
 
 }

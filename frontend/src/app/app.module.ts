@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { IndexPageModule } from './modules/index-page/index-page.module';
 import { TasksModule } from './modules/tasks/tasks.module';
+import { CabinetModule } from './modules/cabinet/cabinet.module';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { TasksModule } from './modules/tasks/tasks.module';
     AppRoutingModule,
     ProfileModule,
     IndexPageModule,
-    TasksModule
+    TasksModule,
+    CabinetModule
   ],
   providers: [],
   bootstrap: [AppComponent]

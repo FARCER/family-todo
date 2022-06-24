@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { SupabaseService } from '../../../../shared/services/supabase.service';
 import { from } from 'rxjs';
+import { Router } from '@angular/router';
+import { AuthBdService } from '../../../../shared/services/auth-bd.service';
 
 @Component({
   selector: 'ad-register',
@@ -14,7 +15,8 @@ export class RegisterComponent implements OnInit {
   public form: FormGroup;
 
   constructor(
-    private readonly supabaseService: SupabaseService
+    private readonly authBdService: AuthBdService,
+    private router: Router
   ) {
   }
 
@@ -29,9 +31,10 @@ export class RegisterComponent implements OnInit {
     const login: string = this.form.value.login;
     const password: string = this.form.value.password;
 
-    from(this.supabaseService.register(login, password)).subscribe(
+    from(this.authBdService.register(login, password)).subscribe(
       (res) => {
         console.log(res);
+        this.router.navigate(['/cabinet'])
       }
     )
 
