@@ -1,7 +1,10 @@
 <!--<ad-task *ngFor="let task of tasks" [task]="task"></ad-task>-->
 
 <ng-container *ngIf="tasks$ | async as tasks">
-  <ad-task *ngFor="let task of tasks" [task]="task"></ad-task>
+  <ui-preloader *ngIf="tasks.isLoading()"></ui-preloader>
+  <ng-container *ngIf="tasks.isReady">
+    <ad-task *ngFor="let task of tasks.tasks" [task]="task"></ad-task>
+  </ng-container>
 </ng-container>
 
 

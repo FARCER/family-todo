@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { SupabaseService } from '../../../shared/services/supabase.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { from, pluck } from 'rxjs';
+import { from, map, Observable, of, pluck, startWith, switchMap } from 'rxjs';
 import { IProfile } from '../interfaces/profile.interface';
 import { Router } from '@angular/router';
 import { ToastService } from 'ad-kit';
+import { Profile } from '../models/profile.model';
+import { EState } from '../../../shared/enum/EState';
 
 @Component({
   selector: 'ad-profile',
@@ -14,8 +16,9 @@ import { ToastService } from 'ad-kit';
 })
 export class ProfileComponent implements OnInit {
 
+  public profileModel$: Observable<Profile>;
+
   public form: FormGroup;
-  public profile: IProfile;
 
 
   constructor(
@@ -29,21 +32,27 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getProfile();
+    this.initProfileModel();
   }
 
-  private getProfile() {
-    from(this.supabaseService.profile).pipe(
-      pluck('data')
-    ).subscribe(
-      (res: IProfile) => {
-        this.initForm(res);
-        this.profile = res;
-        console.log(res)
-        this.changeDetectorRef.detectChanges();
-      }
-    )
 
+  private initProfileModel(): void {
+    let model: Profile;
+
+    this.profileModel$ = of(new Profile()).pipe(
+      switchMap((profile: Profile) => {
+        console.log(profile)
+        model = profile;
+        return from(this.supabaseService.profile)
+      }),
+      pluck('data'),
+      map((profile: IProfile) => {
+        this.initForm(profile);
+        model.state = EState.READY;
+        return model;
+      }),
+      startWith(new Profile()),
+    )
   }
 
   private initForm(profile: IProfile): void {

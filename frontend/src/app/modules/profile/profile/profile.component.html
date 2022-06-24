@@ -1,13 +1,15 @@
 <h1>Мой профиль</h1>
 
-<form *ngIf="profile" (ngSubmit)="updateProfile()" [formGroup]="form">
-  <ui-input [formControlName]="'name'" [label]="'Имя'"></ui-input>
-  <ui-input [formControlName]="'surName'" [label]="'Фамилия'"></ui-input>
-  <ui-input [formControlName]="'patronymic'" [label]="'Отчество'"></ui-input>
-  <ui-input [formControlName]="'dateOfBirth'" [label]="'Дата рождения'"></ui-input>
-  <ui-input [formControlName]="'email'" [label]="'e-mail'"></ui-input>
-  <button>Send</button>
-</form>
+<ng-container *ngIf="profileModel$ | async as profile">
+  <ui-preloader *ngIf="profile.isLoading()"></ui-preloader>
+  <form *ngIf="profile.isReady()" (ngSubmit)="updateProfile()" [formGroup]="form">
+    <ui-input [formControlName]="'name'" [label]="'Имя'"></ui-input>
+    <ui-input [formControlName]="'surName'" [label]="'Фамилия'"></ui-input>
+    <ui-input [formControlName]="'patronymic'" [label]="'Отчество'"></ui-input>
+    <ui-input [formControlName]="'dateOfBirth'" [label]="'Дата рождения'"></ui-input>
+    <ui-input [formControlName]="'email'" [label]="'e-mail'"></ui-input>
+    <button>Send</button>
+  </form>
+</ng-container>
 
-
-<button (click)="logout()">logout</button>
+<ui-button (click)="logout()">Выйти</ui-button>
