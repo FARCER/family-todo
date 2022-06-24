@@ -1,2 +1,2 @@
-<ad-tasks-list></ad-tasks-list>
-<ad-create-task></ad-create-task>
+<ad-tasks-list #tasksListComponent></ad-tasks-list>
+<ad-create-task (reloadTasksList)="tasksListComponent.reloadList$.next(null)"></ad-create-task>

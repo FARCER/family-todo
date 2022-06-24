@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SupabaseService } from '../../../../shared/services/supabase.service';
 import { from } from 'rxjs';
@@ -12,6 +12,7 @@ import { UserBdService } from '../../../../shared/services/user-bd.service';
 })
 export class CreateTaskComponent implements OnInit {
 
+  @Output() private reloadTasksList: EventEmitter<void> = new EventEmitter<void>();
   public form: FormGroup;
 
   constructor(
@@ -38,6 +39,7 @@ export class CreateTaskComponent implements OnInit {
     }
     from(this.dataBdService.updateData(data, 'todos')).subscribe(
       (res) => {
+        this.reloadTasksList.emit();
         console.log(res)
       }
     )
