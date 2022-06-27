@@ -1,0 +1,36 @@
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0;
+
+  .checkbox-input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .checkbox-border {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 20px;
+    height: 20px;
+
+    margin-right: 20px;
+    border: 1px solid #cbcbcb;
+
+    border-radius: 3px;
+
+    .checkbox-filling {
+      width: 10px;
+      height: 10px;
+
+      border-radius: 1px;
+      background: #009866;
+    }
+  }
+}

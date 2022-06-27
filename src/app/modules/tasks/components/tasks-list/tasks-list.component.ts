@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { BehaviorSubject, from, map, Observable, of, pluck, startWith, Subject, switchMap } from 'rxjs';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { BehaviorSubject, combineLatest, from, map, Observable, of, pluck, switchMap, tap } from 'rxjs';
 import { TasksListModel } from '../../models/tasks-list.model';
 import { EState } from '../../../../shared/enum/EState';
 import { ITask } from '../../interfaces/task.interface';
@@ -17,22 +17,29 @@ export class TasksListComponent implements OnInit {
   public reloadList$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   constructor(
-    private dataBdService: DataBdService
+    private dataBdService: DataBdService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
   }
 
   public ngOnInit() {
-    let tasksListModel: TasksListModel = new TasksListModel();
-    this.tasks$ = this.reloadList$.pipe(
-      switchMap(() => from(this.dataBdService.getData('todos', 'title, isCompleted', 'user_id'))),
-      pluck('data'),
-      map((res: any) => {
-        let tasks: ITask[] = res;
-        tasksListModel.state = EState.READY;
-        tasksListModel.tasks = tasks;
-        return tasksListModel;
-      }),
-      startWith(tasksListModel)
+    this.tasks$ = of(new TasksListModel()).pipe(
+      switchMap((model: TasksListModel) => {
+        return combineLatest([this.reloadList$]).pipe(
+          tap(() => {
+            model.state = EState.LOADING;
+            this.changeDetectorRef.detectChanges();
+          }),
+          switchMap(() => from(this.dataBdService.getData('todos', 'title, isCompleted, user_id', 'user_id'))),
+          pluck('data'),
+          map((res: any) => {
+            let tasks: ITask[] = res;
+            model.state = EState.READY;
+            model.tasks = tasks;
+            return model;
+          }),
+        )
+      })
     )
   }
 }

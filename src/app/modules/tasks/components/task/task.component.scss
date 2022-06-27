@@ -1,0 +1,18 @@
+:host {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  justify-content: space-between;
+
+  &:not(:last-child) {
+    margin-bottom: 16px;
+  }
+
+  & > * {
+    &:not(:last-child) {
+      margin-right: 16px;
+    }
+  }
+}

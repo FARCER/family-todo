@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GetSupabaseClientService } from './get-supabase-client.service';
 import { UserBdService } from './user-bd.service';
+import { from } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,6 @@ export class DataBdService {
 
 
   public updateData(data: any, table: string) {
-    return this.getSupabaseClientService.getSupabaseClient().from(table).upsert(data)
+    return from(this.getSupabaseClientService.getSupabaseClient().from(table).upsert(data))
   }
 }

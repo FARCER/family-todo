@@ -1,1 +1,2 @@
-<p>{{task.title}}</p>
+<span>{{task.title}}</span>
+<ui-checkbox [checked]="task.isCompleted" (checkedEvent)="toggleTask($event)"></ui-checkbox>

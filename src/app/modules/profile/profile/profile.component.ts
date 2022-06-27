@@ -82,7 +82,7 @@ export class ProfileComponent implements OnInit {
       id: this.userBdService.user?.id,
       updated_at: new Date(),
     }
-    from(this.dataBdService.updateData(updateData, 'profiles')).subscribe(
+    this.dataBdService.updateData(updateData, 'profiles').subscribe(
       (res) => {
         console.log(res);
       }
