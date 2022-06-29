@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
 import { ITask } from '../../interfaces/task.interface';
-import { DataBdService } from '../../../../shared/services/data-bd.service';
+import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 
 @Component({
   selector: 'ad-task',

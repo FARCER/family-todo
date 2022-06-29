@@ -1,0 +1,5 @@
+<h2>Создайте семью</h2>
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <ui-input [requiredError]="validateNameField()" label="Название семьи" formControlName="name"></ui-input>
+  <ui-button>Создать</ui-button>
+</form>

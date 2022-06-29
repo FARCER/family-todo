@@ -1,9 +1,17 @@
+@import "../../assets/vars";
+
 :host {
   display: flex;
   flex-direction: column;
 
   &:not(:last-child) {
     margin-bottom: 16px;
+  }
+
+  &.is-error {
+    input {
+      border-color: red;
+    }
   }
 
 }
@@ -19,4 +27,9 @@ input {
   border-radius: 8px;
   box-shadow: none;
   border: 1px solid #ccc;
+}
+
+.error {
+  color: red;
+  margin-top: $base-gutter;
 }

@@ -4,5 +4,6 @@ export enum ERoutes {
   REGISTER = 'register',
   CABINET = 'cabinet',
   PROFILE = 'profile',
-  TASKS = 'tasks'
+  TASKS = 'tasks',
+  FAMILY = 'family',
 }

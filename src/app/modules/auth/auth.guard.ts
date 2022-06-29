@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { UserBdService } from '../../shared/services/user-bd.service';
-import { AuthBdService } from '../../shared/services/auth-bd.service';
+import { UserBdService } from '../../shared/services/bd/user-bd.service';
+import { AuthBdService } from '../../shared/services/bd/auth-bd.service';
 
 @Injectable({
   providedIn: 'root'

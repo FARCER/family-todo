@@ -13,6 +13,13 @@ export class ToastComponent {
   constructor(
     private readonly ref: ToastRef,
     @Inject(TOAST_DATA) public readonly data: ToastData) {
+
+    if (this.data.type === 'success') {
+      setTimeout(() => {
+        this.close()
+      }, 3000)
+    }
+
   }
 
   public close(): void {

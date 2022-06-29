@@ -1,7 +1,10 @@
 <header>
   <ul class="nav">
     <li *ngIf="!isAuthorized()">
-      <a routerLink="/auth">Авторизация</a>
+      <a routerLink="/auth/login">Логин</a>
+    </li>
+    <li *ngIf="!isAuthorized()">
+      <a routerLink="/auth/register">Зарегистрироваться</a>
     </li>
     <li *ngIf="isAuthorized()">
       <a routerLink="/cabinet">Профиль</a>
@@ -9,7 +12,6 @@
   </ul>
 </header>
 <main>
-  <h1>Стартовая страница</h1>
   <router-outlet></router-outlet>
 </main>
 <footer>

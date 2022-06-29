@@ -4,4 +4,5 @@ export interface IProfile {
   patronymic: string;
   dateOfBirth: string
   email: string
+  id?: string;
 }

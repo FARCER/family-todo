@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { from } from 'rxjs';
 import { Router } from '@angular/router';
-import { AuthBdService } from '../../../../shared/services/auth-bd.service';
+import { AuthBdService } from '../../../../shared/services/bd/auth-bd.service';
+import { ToastService } from 'ad-kit';
 
 @Component({
   selector: 'ad-login',
@@ -16,7 +17,8 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private readonly authBdService: AuthBdService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {
   }
 
@@ -32,12 +34,14 @@ export class LoginComponent implements OnInit {
     const password: string = String(this.form.value.password);
 
     from(this.authBdService.login(login, password)).subscribe(
-      (res) => {
-        console.log(res)
-        this.router.navigate(['/cabinet'])
+      () => {
+        this.toastService.show({
+          text: 'Вы успешно авторизовались',
+          type: 'success'
+        })
 
+        this.router.navigate(['/cabinet'])
       }
     )
   }
-
 }

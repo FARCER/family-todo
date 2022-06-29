@@ -21,8 +21,8 @@ export class UserBdService {
 
   get profile() {
     return this.getSupabaseClientService.getSupabaseClient()
-      .from('profiles')
-      .select(`email,name,surName,patronymic,dateOfBirth`)
+      .from('users')
+      .select(`email,name,surName,patronymic,dateOfBirth,id`)
       .eq('id', this.user?.id)
       .single();
   }

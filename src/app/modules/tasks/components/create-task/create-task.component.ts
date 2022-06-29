@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { from } from 'rxjs';
-import { DataBdService } from '../../../../shared/services/data-bd.service';
-import { UserBdService } from '../../../../shared/services/user-bd.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
+import { UserBdService } from '../../../../shared/services/bd/user-bd.service';
 
 @Component({
   selector: 'ad-create-task',
@@ -14,6 +13,8 @@ export class CreateTaskComponent implements OnInit {
 
   @Output() private reloadTasksList: EventEmitter<void> = new EventEmitter<void>();
   public form: FormGroup;
+
+  private isSubmitted: boolean = false;
 
   constructor(
     private dataBdService: DataBdService,
@@ -27,22 +28,29 @@ export class CreateTaskComponent implements OnInit {
 
   private initForm(): void {
     this.form = new FormGroup({
-      title: new FormControl('')
+      title: new FormControl('', [Validators.required])
     })
   }
 
   public submit(): void {
-    console.log(this.form.value)
+    this.isSubmitted = true;
+    console.log(this.form)
     const data = {
       title: this.form.value.title,
       user_id: this.userBdService.user?.id
     }
-    this.dataBdService.updateData(data, 'todos').subscribe(
-      (res) => {
-        this.reloadTasksList.emit();
-        console.log(res)
-      }
-    )
+    if (this.form.valid) {
+      this.dataBdService.updateData(data, 'todos').subscribe(
+        (res) => {
+          this.reloadTasksList.emit();
+          console.log(res)
+        }
+      )
+    }
+  }
+
+  public validateTitleField() {
+    return this.isSubmitted && this.form.controls['title'].errors?.['required'];
   }
 
 }

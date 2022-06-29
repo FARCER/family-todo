@@ -1,0 +1,4 @@
+<ng-container *ngIf="myFamilies$ | async as model">
+  <ad-create-family *ngIf="!model.myFamily?.length"></ad-create-family>
+  <ad-invite-to-family *ngIf="model.myFamily?.length" [familyId]="model.myFamily[0].id"></ad-invite-to-family>
+</ng-container>

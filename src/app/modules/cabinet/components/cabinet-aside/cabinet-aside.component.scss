@@ -11,3 +11,16 @@
 .footer {
   margin-top: auto;
 }
+
+.nav {
+  a {
+    display: block;
+    width: 100%;
+    padding: $base-gutter $base-gutter * 2;
+    text-decoration: none;
+
+    &:hover {
+      background-color: #c2c2c2;
+    }
+  }
+}

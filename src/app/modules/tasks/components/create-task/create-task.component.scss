@@ -1,3 +1,9 @@
+@import "./projects/ad-kit/src/lib/assets/vars";
+
 :host {
   display: block;
+}
+
+h2 {
+  margin-bottom: $base-gutter * 2;
 }

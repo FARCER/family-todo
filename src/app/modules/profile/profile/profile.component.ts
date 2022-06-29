@@ -1,14 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { from, map, Observable, of, pluck, startWith, switchMap } from 'rxjs';
 import { IProfile } from '../interfaces/profile.interface';
-import { Router } from '@angular/router';
-import { ToastService } from 'ad-kit';
 import { Profile } from '../models/profile.model';
 import { EState } from '../../../shared/enum/state.enum';
-import { UserBdService } from '../../../shared/services/user-bd.service';
-import { AuthBdService } from '../../../shared/services/auth-bd.service';
-import { DataBdService } from '../../../shared/services/data-bd.service';
+import { UserBdService } from '../../../shared/services/bd/user-bd.service';
+import { AuthBdService } from '../../../shared/services/bd/auth-bd.service';
+import { DataBdService } from '../../../shared/services/bd/data-bd.service';
+import { LocalStorageService } from '../../../shared/services/local-storage.service';
 
 @Component({
   selector: 'ad-profile',
@@ -27,6 +26,7 @@ export class ProfileComponent implements OnInit {
     private userBdService: UserBdService,
     private authBdService: AuthBdService,
     private dataBdService: DataBdService,
+    private localStorageService: LocalStorageService
   ) {
     console.log(this.userBdService.session)
 
@@ -44,10 +44,11 @@ export class ProfileComponent implements OnInit {
       switchMap((profile: Profile) => {
         console.log(profile)
         model = profile;
-        return from(this.userBdService.profile)
+        return from(this.userBdService.profile);
       }),
       pluck('data'),
       map((profile: IProfile) => {
+        this.localStorageService.setItem('profile', JSON.stringify(profile));
         this.initForm(profile);
         model.state = EState.READY;
         return model;
@@ -79,7 +80,7 @@ export class ProfileComponent implements OnInit {
       id: this.userBdService.user?.id,
       updated_at: new Date(),
     }
-    this.dataBdService.updateData(updateData, 'profiles').subscribe(
+    this.dataBdService.updateData(updateData, 'users').subscribe(
       (res) => {
         console.log(res);
       }

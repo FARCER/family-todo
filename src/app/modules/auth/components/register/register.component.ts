@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { from } from 'rxjs';
 import { Router } from '@angular/router';
-import { AuthBdService } from '../../../../shared/services/auth-bd.service';
+import { AuthBdService } from '../../../../shared/services/bd/auth-bd.service';
 
 @Component({
   selector: 'ad-register',

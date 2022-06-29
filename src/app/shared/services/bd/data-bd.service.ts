@@ -15,10 +15,16 @@ export class DataBdService {
   }
 
   public getData(table: string, columns: string, filterById: string = 'id') {
-    return this.getSupabaseClientService.getSupabaseClient()
+    return from(this.getSupabaseClientService.getSupabaseClient()
       .from(table)
       .select(columns)
-      .eq(filterById, this.userBdService.user?.id);
+      .eq(filterById, this.userBdService.user?.id));
+  }
+  public getDataByEmail(table: string, columns: string, filterById: string = 'id') {
+    return from(this.getSupabaseClientService.getSupabaseClient()
+      .from(table)
+      .select(columns)
+      .eq(filterById, this.userBdService.user?.email));
   }
 
 

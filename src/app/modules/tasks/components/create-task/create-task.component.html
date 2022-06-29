@@ -1,5 +1,5 @@
 <h2>Создать новую задачу</h2>
 <form [formGroup]="form" (ngSubmit)="submit()">
-  <ui-input formControlName="title" label="Наименование задачи"></ui-input>
+  <ui-input [requiredError]="validateTitleField()" formControlName="title" label="Наименование задачи"></ui-input>
   <ui-button>Создать задачу</ui-button>
 </form>

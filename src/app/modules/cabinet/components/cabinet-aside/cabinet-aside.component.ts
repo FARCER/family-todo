@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { from } from 'rxjs';
-import { AuthBdService } from '../../../../shared/services/auth-bd.service';
+import { AuthBdService } from '../../../../shared/services/bd/auth-bd.service';
 import { Router } from '@angular/router';
 import { ToastService } from 'ad-kit';
 
 @Component({
   selector: 'ad-cabinet-aside',
   templateUrl: './cabinet-aside.component.html',
-  styleUrls: ['./cabinet-aside.component.scss']
+  styleUrls: ['./cabinet-aside.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CabinetAsideComponent implements OnInit {
 

@@ -9,6 +9,7 @@ import { ProfileModule } from './modules/profile/profile.module';
 import { IndexPageModule } from './modules/index-page/index-page.module';
 import { TasksModule } from './modules/tasks/tasks.module';
 import { CabinetModule } from './modules/cabinet/cabinet.module';
+import { FamiliesModule } from './modules/families/families.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { CabinetModule } from './modules/cabinet/cabinet.module';
     ProfileModule,
     IndexPageModule,
     TasksModule,
-    CabinetModule
+    CabinetModule,
+    FamiliesModule
   ],
   providers: [],
   bootstrap: [AppComponent]

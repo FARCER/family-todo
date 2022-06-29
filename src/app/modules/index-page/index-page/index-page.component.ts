@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AuthBdService } from '../../../shared/services/auth-bd.service';
+import { AuthBdService } from '../../../shared/services/bd/auth-bd.service';
 
 @Component({
   selector: 'ad-index-page',
