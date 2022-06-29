@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, from, map, Observable, of, pluck, switchMap, tap } from 'rxjs';
 import { TasksListModel } from '../../models/tasks-list.model';
-import { EState } from '../../../../shared/enum/EState';
+import { EState } from '../../../../shared/enum/state.enum';
 import { ITask } from '../../interfaces/task.interface';
 import { DataBdService } from '../../../../shared/services/data-bd.service';
 

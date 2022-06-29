@@ -1,9 +1,18 @@
-<h1>Стартовая страница</h1>
-<ul>
-  <li>
-    <a routerLink="/auth">Авторизация</a>
-  </li>
-  <li>
-    <a routerLink="/cabinet">Профиль</a>
-  </li>
-</ul>
+<header>
+  <ul class="nav">
+    <li *ngIf="!isAuthorized()">
+      <a routerLink="/auth">Авторизация</a>
+    </li>
+    <li *ngIf="isAuthorized()">
+      <a routerLink="/cabinet">Профиль</a>
+    </li>
+  </ul>
+</header>
+<main>
+  <h1>Стартовая страница</h1>
+  <router-outlet></router-outlet>
+</main>
+<footer>
+  Типа футер
+</footer>
+

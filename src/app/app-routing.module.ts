@@ -9,35 +9,31 @@ import { CabinetComponent } from './modules/cabinet/components/cabinet/cabinet.c
 import { AuthGuard } from './modules/auth/auth.guard';
 import { AfterAuthGuard } from './shared/guards/after-auth.guard';
 import { TasksComponent } from './modules/tasks/components/tasks/tasks.component';
+import { ERoutes } from './shared/enum/routes.enum';
 
 const routes: Routes = [
   {
-    path: '', component: IndexPageComponent
-  },
-  {
-    path: 'auth', component: AuthComponent, children: [
+    path: '', component: IndexPageComponent, children: [
       {
-        path: 'login', component: LoginComponent,
-      },
-      {
-        path: 'register', component: RegisterComponent
+        path: ERoutes.AUTH, component: AuthComponent, children: [
+          {
+            path: ERoutes.LOGIN, component: LoginComponent,
+          },
+          {
+            path: ERoutes.REGISTER, component: RegisterComponent
+          }
+        ],
+        canActivate: [AuthGuard],
       }
-    ],
-    canActivate: [AuthGuard],
+    ]
   },
-  // {
-  //   path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]
-  // },
-  // {
-  //   path: 'tasks', component: TasksListComponent, canActivate: [AuthGuard]
-  // },
   {
-    path: 'cabinet', component: CabinetComponent, canActivate: [AfterAuthGuard], children: [
+    path: ERoutes.CABINET, component: CabinetComponent, canActivate: [AfterAuthGuard], children: [
       {
-        path: 'profile', component: ProfileComponent,
+        path: ERoutes.PROFILE, component: ProfileComponent,
       },
       {
-        path: 'tasks', component: TasksComponent
+        path: ERoutes.TASKS, component: TasksComponent
       }
     ]
   },

@@ -22,4 +22,8 @@ export class AuthBdService {
   public logout() {
     return this.getSupabaseClientService.getSupabaseClient().auth.signOut();
   }
+
+  public isAuthorized(): boolean {
+    return !!this.getSupabaseClientService.getSupabaseClient().auth.session();
+  }
 }

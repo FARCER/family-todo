@@ -1,4 +1,4 @@
-import { EState } from '../enum/EState';
+import { EState } from '../enum/state.enum';
 
 export class StateModel {
 

@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { AuthBdService } from '../../../shared/services/auth-bd.service';
 
 @Component({
   selector: 'ad-index-page',
@@ -8,5 +9,13 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 })
 export class IndexPageComponent {
 
+  constructor(
+    private authBdService: AuthBdService
+  ) {
+  }
+
+  public isAuthorized(): boolean {
+    return this.authBdService.isAuthorized();
+  }
 
 }

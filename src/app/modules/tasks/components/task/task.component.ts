@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
 import { ITask } from '../../interfaces/task.interface';
 import { DataBdService } from '../../../../shared/services/data-bd.service';
 
@@ -14,10 +14,14 @@ export class TaskComponent {
   ) {
   }
 
+  @HostBinding('class.is-done') get isDone() {
+    return this.task.isCompleted;
+  }
+
   @Input() public task: ITask;
 
   public toggleTask(isCompleted: boolean): void {
-    console.log(this.task);
+    this.task.isCompleted = !this.task.isCompleted;
     const updateData: any = {
       isCompleted,
       user_id: this.task.user_id,

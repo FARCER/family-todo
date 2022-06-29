@@ -5,7 +5,7 @@ import { IProfile } from '../interfaces/profile.interface';
 import { Router } from '@angular/router';
 import { ToastService } from 'ad-kit';
 import { Profile } from '../models/profile.model';
-import { EState } from '../../../shared/enum/EState';
+import { EState } from '../../../shared/enum/state.enum';
 import { UserBdService } from '../../../shared/services/user-bd.service';
 import { AuthBdService } from '../../../shared/services/auth-bd.service';
 import { DataBdService } from '../../../shared/services/data-bd.service';
@@ -27,9 +27,6 @@ export class ProfileComponent implements OnInit {
     private userBdService: UserBdService,
     private authBdService: AuthBdService,
     private dataBdService: DataBdService,
-    private changeDetectorRef: ChangeDetectorRef,
-    private router: Router,
-    private toastService: ToastService
   ) {
     console.log(this.userBdService.session)
 
@@ -88,15 +85,6 @@ export class ProfileComponent implements OnInit {
       }
     )
 
-  }
-
-  public logout(): void {
-    from(this.authBdService.logout()).subscribe(
-      (res) => {
-        this.router.navigate(['']);
-        this.toastService.show({ text: 'Вы успешно вышли из личного кабинета', type: 'success' })
-      }
-    )
   }
 
 }
