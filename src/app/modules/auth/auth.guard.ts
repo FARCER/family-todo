@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
+import { CanActivate } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { UserBdService } from '../../shared/services/bd/user-bd.service';
 import { AuthBdService } from '../../shared/services/bd/auth-bd.service';
 
 @Injectable({
@@ -13,15 +12,11 @@ export class AuthGuard implements CanActivate {
   ) {
   }
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean> {
+  canActivate(): Observable<boolean> {
     return of(!this.authBdService.isAuthorized());
   }
 
-  canActivateChild(
-    childRoute: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean> {
+  canActivateChild(): Observable<boolean> {
     return of(!this.authBdService.isAuthorized());
   }
 

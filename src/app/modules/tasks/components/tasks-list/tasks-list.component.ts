@@ -4,6 +4,8 @@ import { TasksListModel } from '../../models/tasks-list.model';
 import { EState } from '../../../../shared/enum/state.enum';
 import { ITask } from '../../interfaces/task.interface';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
+import { EFilterType } from '../../../../shared/enum/filter-type.enum';
+import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
 
 @Component({
   selector: 'ad-tasks-list',
@@ -29,7 +31,12 @@ export class TasksListComponent implements OnInit {
           model.state = EState.LOADING;
           this.changeDetectorRef.detectChanges();
         }),
-        switchMap(() => this.dataBdService.getData('todos', 'title, isCompleted, user_id', 'userId')),
+        switchMap(() => this.dataBdService.getData({
+          table: EBdTables.TODOS,
+          columns: 'title, isCompleted, user_id',
+          filterField: 'userId',
+          filterType: EFilterType.ID
+        })),
         pluck('data'),
         map((res: any) => {
           let tasks: ITask[] = res;

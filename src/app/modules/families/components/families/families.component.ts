@@ -5,6 +5,9 @@ import { BehaviorSubject, combineLatest, forkJoin, map, Observable, of, switchMa
 import { FamiliesModel } from '../../models/families.model';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { EState } from '../../../../shared/enum/state.enum';
+import { GetUserProfileService } from '../../../../shared/services/get-user-profile.service';
+import { EFilterType } from '../../../../shared/enum/filter-type.enum';
+import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
 
 @Component({
   selector: 'ad-family',
@@ -20,9 +23,10 @@ export class FamiliesComponent implements OnInit {
 
   constructor(
     private localStorageService: LocalStorageService,
-    private dataBdService: DataBdService
+    private dataBdService: DataBdService,
+    private getUserProfileService: GetUserProfileService
   ) {
-    this.user = JSON.parse(this.localStorageService.getItem('profile'))
+    this.user = this.getUserProfileService.user;
   }
 
   ngOnInit(): void {
@@ -32,8 +36,18 @@ export class FamiliesComponent implements OnInit {
   private initModel(): void {
     this.myFamilies$ = of(new FamiliesModel()).pipe(
       switchMap((model: FamiliesModel) => combineLatest([this.reloadFamilies$]).pipe(
-        switchMap(() => forkJoin([this.dataBdService.getData('families', 'creatorName, id', 'creatorId'),
-          this.dataBdService.getDataByEmail('invite-to-family', 'user_email', 'user_email')])),
+        switchMap(() => forkJoin([this.dataBdService.getData({
+          table: EBdTables.FAMILIES,
+          columns: 'creatorName, id',
+          filterField: 'creatorId',
+          filterType: EFilterType.ID
+        }),
+          this.dataBdService.getData({
+            table: EBdTables.INVITE_TO_FAMILY,
+            columns: 'user_email',
+            filterType: EFilterType.EMAIL,
+            filterField: 'user_email'
+          },)])),
         map(([res, res2]) => {
           console.log(res2)
           const myFamily: any = res.data;

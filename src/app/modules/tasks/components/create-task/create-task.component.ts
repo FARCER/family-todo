@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { UserBdService } from '../../../../shared/services/bd/user-bd.service';
+import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
 
 @Component({
   selector: 'ad-create-task',
@@ -40,7 +41,7 @@ export class CreateTaskComponent implements OnInit {
       user_id: this.userBdService.user?.id
     }
     if (this.form.valid) {
-      this.dataBdService.updateData(data, 'todos').subscribe(
+      this.dataBdService.updateData(data, EBdTables.TODOS).subscribe(
         (res) => {
           this.reloadTasksList.emit();
           console.log(res)

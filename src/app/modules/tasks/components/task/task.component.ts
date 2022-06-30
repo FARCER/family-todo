@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
 import { ITask } from '../../interfaces/task.interface';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
+import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
 
 @Component({
   selector: 'ad-task',
@@ -27,7 +28,7 @@ export class TaskComponent {
       user_id: this.task.user_id,
       title: this.task.title
     }
-    this.dataBdService.updateData(updateData, 'todos').subscribe()
+    this.dataBdService.updateData(updateData, EBdTables.TODOS).subscribe()
   }
 
 }

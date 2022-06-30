@@ -1,3 +1,4 @@
 <label *ngIf="label">{{label}}</label>
 <input [type]="type" [value]="value" (input)="inputChange($event)">
-<span class="error required-error" *ngIf="requiredError">Данное поле обязательно для заполнения</span>
+<span class="error" *ngIf="requiredError">Данное поле обязательно для заполнения</span>
+<span class="error" *ngIf="emailField">E-mail указан некорректно</span>

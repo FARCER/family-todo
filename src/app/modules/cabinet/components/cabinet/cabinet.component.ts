@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'ad-cabinet',
@@ -6,9 +6,5 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
   styleUrls: ['./cabinet.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CabinetComponent implements OnInit {
-
-
-  ngOnInit(): void {
-  }
+export class CabinetComponent{
 }

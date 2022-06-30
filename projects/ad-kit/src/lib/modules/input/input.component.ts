@@ -17,7 +17,14 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 export class InputComponent implements ControlValueAccessor {
   @Input() public label: string = '';
   @Input() public type: string = 'text';
-  @HostBinding('class.is-error') @Input() public requiredError: boolean = false;
+
+  @HostBinding('class.is-error')
+  get hasError(): boolean {
+    return this.requiredError || this.emailField
+  }
+
+  @Input() public requiredError: boolean = false;
+  @Input() public emailField: boolean = false;
 
   public value: string = '';
 

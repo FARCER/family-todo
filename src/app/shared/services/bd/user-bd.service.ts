@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { GetSupabaseClientService } from './get-supabase-client.service';
+import { EBdTables } from '../../enum/bd-tables.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class UserBdService {
 
   get profile() {
     return this.getSupabaseClientService.getSupabaseClient()
-      .from('users')
+      .from(EBdTables.USERS)
       .select(`email,name,surName,patronymic,dateOfBirth,id`)
       .eq('id', this.user?.id)
       .single();

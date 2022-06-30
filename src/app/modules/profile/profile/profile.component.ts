@@ -8,6 +8,7 @@ import { UserBdService } from '../../../shared/services/bd/user-bd.service';
 import { AuthBdService } from '../../../shared/services/bd/auth-bd.service';
 import { DataBdService } from '../../../shared/services/bd/data-bd.service';
 import { LocalStorageService } from '../../../shared/services/local-storage.service';
+import { EBdTables } from '../../../shared/enum/bd-tables.enum';
 
 @Component({
   selector: 'ad-profile',
@@ -80,7 +81,7 @@ export class ProfileComponent implements OnInit {
       id: this.userBdService.user?.id,
       updated_at: new Date(),
     }
-    this.dataBdService.updateData(updateData, 'users').subscribe(
+    this.dataBdService.updateData(updateData, EBdTables.USERS).subscribe(
       (res) => {
         console.log(res);
       }

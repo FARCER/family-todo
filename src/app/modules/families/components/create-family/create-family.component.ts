@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { IProfile } from '../../../profile/interfaces/profile.interface';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
+import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
 
 @Component({
   selector: 'ad-create-family',
@@ -42,7 +43,7 @@ export class CreateFamilyComponent implements OnInit {
         creatorId: this.user.id,
         name: this.form.value.name
       }
-      this.dataBdService.updateData(data, 'families').subscribe(
+      this.dataBdService.updateData(data, EBdTables.FAMILIES).subscribe(
         (res) => {
           console.log(res)
         }
