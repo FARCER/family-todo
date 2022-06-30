@@ -44,15 +44,14 @@ export class FamiliesComponent implements OnInit {
         }),
           this.dataBdService.getData({
             table: EBdTables.INVITE_TO_FAMILY,
-            columns: 'user_email',
+            columns: 'user_email, author',
             filterType: EFilterType.EMAIL,
             filterField: 'user_email'
           },)])),
         map(([res, res2]) => {
-          console.log(res2)
+          console.log(res2.data)
           const myFamily: any = res.data;
           if (myFamily.length) {
-            console.log(myFamily)
             model.myFamily = myFamily;
           }
           model.state = EState.READY;

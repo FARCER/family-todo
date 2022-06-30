@@ -1,4 +1,8 @@
-<ng-container *ngIf="myFamilies$ | async as model">
+<ng-container *ngIf="myFamilies$ | async as model; else preloader">
   <ad-create-family *ngIf="!model.myFamily?.length"></ad-create-family>
   <ad-invite-to-family *ngIf="model.myFamily?.length" [familyId]="model.myFamily[0].id"></ad-invite-to-family>
 </ng-container>
+
+<ng-template #preloader>
+  <ui-preloader></ui-preloader>
+</ng-template>

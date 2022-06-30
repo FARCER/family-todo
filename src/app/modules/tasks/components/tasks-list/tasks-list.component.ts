@@ -33,7 +33,7 @@ export class TasksListComponent implements OnInit {
         }),
         switchMap(() => this.dataBdService.getData({
           table: EBdTables.TODOS,
-          columns: 'title, isCompleted, user_id',
+          columns: 'title, isCompleted, userId',
           filterField: 'userId',
           filterType: EFilterType.ID
         })),
