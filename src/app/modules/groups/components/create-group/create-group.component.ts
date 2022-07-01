@@ -4,13 +4,14 @@ import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { IProfile } from '../../../profile/interfaces/profile.interface';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
+import { switchMap } from 'rxjs';
 
 @Component({
-  selector: 'ad-create-family',
-  templateUrl: './create-family.component.html',
-  styleUrls: ['./create-family.component.scss']
+  selector: 'ad-create-group',
+  templateUrl: './create-group.component.html',
+  styleUrls: ['./create-group.component.scss']
 })
-export class CreateFamilyComponent implements OnInit {
+export class CreateGroupComponent implements OnInit {
 
   private isSubmitted: boolean = false;
   public form: FormGroup;
@@ -38,17 +39,33 @@ export class CreateFamilyComponent implements OnInit {
   public submit(): void {
     this.isSubmitted = true;
     if (this.form.valid) {
-      const data = {
-        creatorName: this.user.name,
-        creatorId: this.user.id,
-        name: this.form.value.name
-      }
-      this.dataBdService.updateData(data, EBdTables.FAMILIES).subscribe(
+      this.createGroup().pipe(
+        switchMap((res: any) => this.updateUserGroupsTable(res.data.id))
+      ).subscribe(
         (res) => {
           console.log(res)
         }
       )
     }
+  }
+
+  private createGroup() {
+    const data = {
+      creatorName: this.user.name,
+      creatorId: this.user.id,
+      name: this.form.value.name
+    }
+    return this.dataBdService.updateData(data, EBdTables.GROUPS)
+  }
+
+  private updateUserGroupsTable(id: string) {
+    const data = {
+      id,
+      user_id: this.user.id,
+      author: this.user.name,
+      user_email: this.user.email
+    }
+    return this.dataBdService.createData(data, EBdTables.GROUPS_USERS)
   }
 
 

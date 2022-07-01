@@ -16,14 +16,39 @@ export class DataBdService {
   ) {
   }
 
-  public getData(request: IGetDataRequest): Observable<any> {
-    return from(this.getSupabaseClientService.getSupabaseClient()
+  private getDataAsPromise(request: IGetDataRequest) {
+    return this.getSupabaseClientService.getSupabaseClient()
       .from(request.table)
       .select(request.columns)
-      .eq(request.filterField, request.filterType === EFilterType.ID ? this.userBdService.user?.id : this.userBdService.user?.email));
+      .eq(request.filterField, this.getFilterField(request))
+  }
+
+
+  private getOneDataAsPromise(request: IGetDataRequest) {
+    return this.getDataAsPromise(request).single()
+  }
+
+  public getData(request: IGetDataRequest): Observable<any> {
+    return from(this.getDataAsPromise(request))
+  }
+
+  public getOneData(request: IGetDataRequest): Observable<any> {
+    return from(this.getOneDataAsPromise(request));
+  }
+
+  private getFilterField(request: IGetDataRequest): string {
+    if (request.customFilterField) {
+      return request.customFilterField;
+    }
+    return (request.filterType === EFilterType.ID ? this.userBdService.user?.id : this.userBdService.user?.email) || '';
   }
 
   public updateData(data: any, table: string): Observable<any> {
-    return from(this.getSupabaseClientService.getSupabaseClient().from(table).upsert(data))
+    return from(this.getSupabaseClientService.getSupabaseClient().from(table).upsert(data).single())
+  }
+
+
+  public createData(data: any, table: string): Observable<any> {
+    return from(this.getSupabaseClientService.getSupabaseClient().from(table).insert(data))
   }
 }

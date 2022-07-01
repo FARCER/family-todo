@@ -5,4 +5,5 @@ export interface IGetDataRequest {
   columns: string;
   filterType: EFilterType;
   filterField: string;
+  customFilterField?: string;
 }

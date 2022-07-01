@@ -10,7 +10,7 @@ import { AuthGuard } from './modules/auth/auth.guard';
 import { AfterAuthGuard } from './shared/guards/after-auth.guard';
 import { TasksComponent } from './modules/tasks/components/tasks/tasks.component';
 import { ERoutes } from './shared/enum/routes.enum';
-import { FamiliesComponent } from './modules/families/components/families/families.component';
+import { GroupsComponent } from './modules/groups/components/groups/groups.component';
 
 const routes: Routes = [
   {
@@ -37,7 +37,7 @@ const routes: Routes = [
         path: ERoutes.TASKS, component: TasksComponent
       },
       {
-        path: ERoutes.FAMILY, component: FamiliesComponent
+        path: ERoutes.GROUPS, component: GroupsComponent
       }
     ]
   },

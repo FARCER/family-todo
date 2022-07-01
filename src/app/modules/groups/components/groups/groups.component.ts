@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { IProfile } from '../../../profile/interfaces/profile.interface';
 import { BehaviorSubject, combineLatest, forkJoin, map, Observable, of, switchMap } from 'rxjs';
-import { FamiliesModel } from '../../models/families.model';
+import { GroupsModel } from '../../models/groups.model';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { EState } from '../../../../shared/enum/state.enum';
 import { GetUserProfileService } from '../../../../shared/services/get-user-profile.service';
@@ -10,16 +10,16 @@ import { EFilterType } from '../../../../shared/enum/filter-type.enum';
 import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
 
 @Component({
-  selector: 'ad-family',
-  templateUrl: './families.component.html',
-  styleUrls: ['./families.component.scss']
+  selector: 'ad-groups',
+  templateUrl: './groups.component.html',
+  styleUrls: ['./groups.component.scss']
 })
-export class FamiliesComponent implements OnInit {
+export class GroupsComponent implements OnInit {
 
-  public myFamilies$: Observable<FamiliesModel>;
+  public myGroups$: Observable<GroupsModel>;
 
   private user: IProfile;
-  private reloadFamilies$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private reloadGroups$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   constructor(
     private localStorageService: LocalStorageService,
@@ -34,25 +34,19 @@ export class FamiliesComponent implements OnInit {
   }
 
   private initModel(): void {
-    this.myFamilies$ = of(new FamiliesModel()).pipe(
-      switchMap((model: FamiliesModel) => combineLatest([this.reloadFamilies$]).pipe(
+    this.myGroups$ = of(new GroupsModel()).pipe(
+      switchMap((model: GroupsModel) => combineLatest([this.reloadGroups$]).pipe(
         switchMap(() => forkJoin([this.dataBdService.getData({
-          table: EBdTables.FAMILIES,
-          columns: 'creatorName, id',
+          table: EBdTables.GROUPS,
+          columns: 'id,name',
           filterField: 'creatorId',
           filterType: EFilterType.ID
-        }),
-          this.dataBdService.getData({
-            table: EBdTables.INVITE_TO_FAMILY,
-            columns: 'user_email, author',
-            filterType: EFilterType.EMAIL,
-            filterField: 'user_email'
-          },)])),
-        map(([res, res2]) => {
-          console.log(res2.data)
+        })])),
+        map(([res]) => {
+          console.log(res.data)
           const myFamily: any = res.data;
-          if (myFamily.length) {
-            model.myFamily = myFamily;
+          if (myFamily?.length) {
+            model.myGroups = myFamily;
           }
           model.state = EState.READY;
           return model;

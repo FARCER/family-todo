@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FamiliesComponent } from './families.component';
+import { InviteToGroupComponent } from './invite-to-group.component';
 
-describe('FamilyComponent', () => {
-  let component: FamiliesComponent;
-  let fixture: ComponentFixture<FamiliesComponent>;
+describe('InviteToFamilyComponent', () => {
+  let component: InviteToGroupComponent;
+  let fixture: ComponentFixture<InviteToGroupComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FamiliesComponent ]
+      declarations: [ InviteToGroupComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FamiliesComponent);
+    fixture = TestBed.createComponent(InviteToGroupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

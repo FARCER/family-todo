@@ -1,6 +1,6 @@
 export enum EBdTables {
-  INVITE_TO_FAMILY = 'invite-to-family',
-  FAMILIES = 'families',
+  GROUPS_USERS = 'groups-users',
+  GROUPS = 'groups',
   TODOS = 'todos',
   USERS = 'users'
 }

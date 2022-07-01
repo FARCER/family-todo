@@ -4,15 +4,17 @@ import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { GetUserProfileService } from '../../../../shared/services/get-user-profile.service';
 import { IProfile } from '../../../profile/interfaces/profile.interface';
 import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
+import { EFilterType } from '../../../../shared/enum/filter-type.enum';
+import { map, Observable, switchMap } from 'rxjs';
 
 @Component({
-  selector: 'ad-invite-to-family',
-  templateUrl: './invite-to-family.component.html',
-  styleUrls: ['./invite-to-family.component.scss']
+  selector: 'ad-invite-to-group',
+  templateUrl: './invite-to-group.component.html',
+  styleUrls: ['./invite-to-group.component.scss']
 })
-export class InviteToFamilyComponent implements OnInit {
+export class InviteToGroupComponent implements OnInit {
 
-  @Input() public familyId: string = '';
+  @Input() public groupId: string = '';
   public form: FormGroup;
 
   private isSubmitted: boolean = false;
@@ -39,18 +41,36 @@ export class InviteToFamilyComponent implements OnInit {
   public submit(): void {
     this.isSubmitted = true;
     if (this.form.valid) {
-      const data = {
-        family_id: this.familyId,
-        user_email: this.form.value.email,
-        author: this.user.name
-      }
-      this.dataBdService.updateData(data, EBdTables.INVITE_TO_FAMILY).subscribe(
+      const email: string = this.form.value.email;
+      this.getUserId().pipe(
+        switchMap((user_id: string) => {
+          const data = {
+            id: this.groupId,
+            user_email: email,
+            author: this.user.name,
+            user_id,
+          }
+          return this.dataBdService.createData(data, EBdTables.GROUPS_USERS)
+
+        })
+      ).subscribe(
         (res) => {
           console.log(res)
         }
       )
     }
+  }
 
+  private getUserId(): Observable<string> {
+    return this.dataBdService.getData({
+      table: EBdTables.USERS,
+      filterType: EFilterType.EMAIL,
+      filterField: 'email',
+      columns: 'id',
+      customFilterField: this.form.value.email
+    }).pipe(
+      map((res: any) => res.data[0].id)
+    )
   }
 
   public validateEmailField() {

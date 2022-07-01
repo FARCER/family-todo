@@ -5,5 +5,5 @@ export enum ERoutes {
   CABINET = 'cabinet',
   PROFILE = 'profile',
   TASKS = 'tasks',
-  FAMILY = 'family',
+  GROUPS = 'groups',
 }
