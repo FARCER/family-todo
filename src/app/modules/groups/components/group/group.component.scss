@@ -1,0 +1,16 @@
+@import "./projects/ad-kit/src/lib/assets/vars";
+
+:host {
+  display: block;
+  border: 1px solid #ccc;
+  padding: $base-gutter * 2;
+  margin: $base-gutter * 2;
+}
+
+.header {
+  margin-bottom: $base-gutter * 2;
+}
+
+.body {
+  margin-bottom: $base-gutter * 2;
+}

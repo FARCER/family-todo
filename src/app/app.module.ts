@@ -9,7 +9,7 @@ import { ProfileModule } from './modules/profile/profile.module';
 import { IndexPageModule } from './modules/index-page/index-page.module';
 import { TasksModule } from './modules/tasks/tasks.module';
 import { CabinetModule } from './modules/cabinet/cabinet.module';
-import { FamiliesModule } from './modules/families/families.module';
+import { GroupsModule } from './modules/groups/groups.module';
 
 @NgModule({
   declarations: [
@@ -24,7 +24,7 @@ import { FamiliesModule } from './modules/families/families.module';
     IndexPageModule,
     TasksModule,
     CabinetModule,
-    FamiliesModule
+    GroupsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

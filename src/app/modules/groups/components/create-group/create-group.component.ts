@@ -5,6 +5,7 @@ import { IProfile } from '../../../profile/interfaces/profile.interface';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
 import { switchMap } from 'rxjs';
+import { EUserGroupStatus } from '../../../../shared/enum/user-group-status.enum';
 
 @Component({
   selector: 'ad-create-group',
@@ -63,7 +64,8 @@ export class CreateGroupComponent implements OnInit {
       id,
       user_id: this.user.id,
       author: this.user.name,
-      user_email: this.user.email
+      email: this.user.email,
+      status: EUserGroupStatus.MEMBER
     }
     return this.dataBdService.createData(data, EBdTables.GROUPS_USERS)
   }

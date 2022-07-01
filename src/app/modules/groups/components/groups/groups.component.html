@@ -1,7 +1,8 @@
 <ng-container *ngIf="myGroups$ | async as model; else preloader">
-  <ad-create-group *ngIf="!model.myGroups?.length"></ad-create-group>
-<!--  <ad-my-groups *ngIf="model?.myGroups.length"></ad-my-groups>-->
-  <ad-invite-to-group *ngIf="model.myGroups?.length" [groupId]="model.myGroups[0].id"></ad-invite-to-group>
+  <ad-create-group></ad-create-group>
+  <div class="groups" *ngIf="model.myGroups.length">
+    <ad-group *ngFor="let group of model.myGroups" [model]="group"></ad-group>
+  </div>
 </ng-container>
 
 <ng-template #preloader>

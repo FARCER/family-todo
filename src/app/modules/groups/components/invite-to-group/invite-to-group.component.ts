@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { GetUserProfileService } from '../../../../shared/services/get-user-profile.service';
@@ -10,7 +10,8 @@ import { map, Observable, switchMap } from 'rxjs';
 @Component({
   selector: 'ad-invite-to-group',
   templateUrl: './invite-to-group.component.html',
-  styleUrls: ['./invite-to-group.component.scss']
+  styleUrls: ['./invite-to-group.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InviteToGroupComponent implements OnInit {
 

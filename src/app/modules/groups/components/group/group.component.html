@@ -1,1 +1,25 @@
-<p>group works!</p>
+<div class="header">
+  <h2>{{model.name}}</h2>
+</div>
+<div class="body">
+  <table>
+    <thead>
+    <tr>
+      <th>E-mail</th>
+      <th>Статус</th>
+      <th>Имя</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let user of model.users">
+      <td>{{user.email}}</td>
+      <td>{{user.status}}</td>
+      <td></td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+<div class="footer">
+  <ad-invite-to-group [groupId]="model.id"></ad-invite-to-group>
+</div>

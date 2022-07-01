@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { IProfile } from '../../../profile/interfaces/profile.interface';
 import { BehaviorSubject, combineLatest, forkJoin, map, Observable, of, switchMap } from 'rxjs';
@@ -8,11 +8,14 @@ import { EState } from '../../../../shared/enum/state.enum';
 import { GetUserProfileService } from '../../../../shared/services/get-user-profile.service';
 import { EFilterType } from '../../../../shared/enum/filter-type.enum';
 import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
+import { GroupModel } from '../../models/group.model';
+import { IGroup } from '../../interfaces/group.interface';
 
 @Component({
   selector: 'ad-groups',
   templateUrl: './groups.component.html',
-  styleUrls: ['./groups.component.scss']
+  styleUrls: ['./groups.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GroupsComponent implements OnInit {
 
@@ -38,15 +41,15 @@ export class GroupsComponent implements OnInit {
       switchMap((model: GroupsModel) => combineLatest([this.reloadGroups$]).pipe(
         switchMap(() => forkJoin([this.dataBdService.getData({
           table: EBdTables.GROUPS,
-          columns: 'id,name',
+          columns: 'id,name, users:id(email,status)',
           filterField: 'creatorId',
           filterType: EFilterType.ID
         })])),
         map(([res]) => {
           console.log(res.data)
-          const myFamily: any = res.data;
-          if (myFamily?.length) {
-            model.myGroups = myFamily;
+          const myGroups: GroupModel[] = res.data.map((group: IGroup) => new GroupModel(group));
+          if (myGroups?.length) {
+            model.myGroups = myGroups;
           }
           model.state = EState.READY;
           return model;
