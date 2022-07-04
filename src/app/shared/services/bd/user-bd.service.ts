@@ -25,7 +25,7 @@ export class UserBdService {
   get profile(): Observable<IProfile> {
     return from(this.getSupabaseClientService.getSupabaseClient()
       .from(EBdTables.USERS)
-      .select(`email,name,surName,patronymic,dateOfBirth,id`)
+      .select(`name,surName,patronymic,dateOfBirth,id`)
       .eq('id', this.user?.id)
       .single()).pipe(
       pluck('data')

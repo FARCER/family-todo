@@ -30,4 +30,8 @@ export class AuthBdService {
   public isAuthorized(): boolean {
     return !!this.getSupabaseClientService.getSupabaseClient().auth.session();
   }
+
+  public updateAuthData(updateData: any):Observable<any> {
+    return from(this.getSupabaseClientService.getSupabaseClient().auth.update(updateData))
+  }
 }

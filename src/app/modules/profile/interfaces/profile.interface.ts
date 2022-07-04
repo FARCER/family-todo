@@ -2,7 +2,7 @@ export interface IProfile {
   name: string;
   surName: string;
   patronymic: string;
-  dateOfBirth: string
-  email: string
+  dateOfBirth: string;
+  email?: string;
   id?: string;
 }

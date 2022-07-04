@@ -71,7 +71,7 @@ export class CreateGroupComponent implements OnInit {
       id,
       user_id: this.user.id,
       author: this.user.name,
-      email: this.user.email,
+      // email: this.user.email,
       status: EUserGroupStatus.MEMBER
     }
     return this.dataBdService.createData(data, EBdTables.GROUPS_USERS)

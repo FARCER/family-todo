@@ -1,0 +1,6 @@
+<h2>Данные авторизации</h2>
+<form (ngSubmit)="update()" [formGroup]="authForm">
+  <ui-input [formControlName]="'email'" [label]="'e-mail'"></ui-input>
+  <ui-input type="password" [formControlName]="'password'" [label]="'Пароль'"></ui-input>
+  <ui-button>Обновить</ui-button>
+</form>

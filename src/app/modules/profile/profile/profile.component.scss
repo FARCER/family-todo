@@ -1,0 +1,10 @@
+@import "./projects/ad-kit/src/lib/assets/vars";
+
+:host {
+  display: block;
+  & > * {
+    &:not(:last-child) {
+      margin-bottom: $base-gutter * 2;
+    }
+  }
+}

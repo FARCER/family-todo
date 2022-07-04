@@ -1,7 +1,7 @@
 <ng-container *ngIf="myGroups$ | async as model; else preloader">
   <ad-create-group [model]="model" (createGroupEmit)="reloadGroups$.next(null)"></ad-create-group>
   <ng-container *ngIf="model.isReady(); else preloader">
-    <ng-container *ngIf="model.myInvitations.length">
+    <ng-container *ngIf="model.myInvitations?.length">
       Вас пришлашают в группу {{model.myInvitations[0].author}}
     </ng-container>
     <div class="groups" *ngIf="model.myGroups?.length">
