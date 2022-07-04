@@ -1,4 +1,5 @@
 export enum EUserGroupStatus {
   INVITED = 'invited',
-  MEMBER = 'member'
+  MEMBER = 'member',
+  AUTHOR = 'author'
 }

@@ -9,7 +9,6 @@ import { GroupModel } from '../../models/group.model';
 })
 export class GroupComponent implements OnInit {
 
-
   @Input() public model: GroupModel;
 
   constructor() {

@@ -6,6 +6,7 @@ import { IProfile } from '../interfaces/profile.interface';
 import { EState } from '../../../shared/enum/state.enum';
 import { LocalStorageService } from '../../../shared/services/local-storage.service';
 import { PersonalDataModel } from '../models/personal-data.model';
+import { ELocalStorageKeys } from '../../../shared/enum/local-storage-keys.enum';
 
 @Component({
   selector: 'ad-profile',
@@ -31,7 +32,7 @@ export class ProfileComponent {
       switchMap((model: Profile) => combineLatest([this.reloadProfile$]).pipe(
         switchMap(() => this.userBdService.profile),
         map((profile: IProfile) => {
-          this.localStorageService.setItem('profile', JSON.stringify(profile));
+          this.localStorageService.setItem(ELocalStorageKeys.PROFILE, JSON.stringify(profile));
           model.personalData = new PersonalDataModel(profile)
           model.state = EState.READY;
           return model;

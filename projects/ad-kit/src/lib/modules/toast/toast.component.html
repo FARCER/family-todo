@@ -1,3 +1,4 @@
-<div class="toast">
+<div class="toast" [ngClass]="data.type">
   <div>{{data.text}}</div>
+  <span (click)="close()" *ngIf="data.type !== 'success'">x</span>
 </div>

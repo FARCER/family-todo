@@ -39,11 +39,10 @@ export class TasksComponent implements OnInit {
         pluck('data'),
         map((res: any) => {
           let tasks: ITask[] = res;
+          model.tasksList = new TasksListModel();
           model.state = EState.READY;
           if (tasks.length) {
-            const list: TasksListModel = new TasksListModel();
-            list.tasks = tasks
-            model.tasksList = list;
+            model.tasksList.tasks = tasks
           }
           return model;
         })

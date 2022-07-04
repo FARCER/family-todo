@@ -5,7 +5,8 @@ import { GetUserProfileService } from '../../../../shared/services/get-user-prof
 import { IProfile } from '../../../profile/interfaces/profile.interface';
 import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
 import { EFilterType } from '../../../../shared/enum/filter-type.enum';
-import { map, Observable, switchMap } from 'rxjs';
+import { map, Observable, pluck, switchMap, throwError } from 'rxjs';
+import { ToastService } from 'ad-kit';
 
 @Component({
   selector: 'ad-invite-to-group',
@@ -24,7 +25,8 @@ export class InviteToGroupComponent implements OnInit {
 
   constructor(
     private dataBdService: DataBdService,
-    private getUserProfileService: GetUserProfileService
+    private getUserProfileService: GetUserProfileService,
+    private toastService: ToastService
   ) {
     this.user = this.getUserProfileService.user;
   }
@@ -70,7 +72,17 @@ export class InviteToGroupComponent implements OnInit {
       columns: 'id',
       customFilterField: this.form.value.email
     }).pipe(
-      map((res: any) => res.data[0].id)
+      pluck('data'),
+      map((res: any) => {
+        if (res.length) {
+          return res[0].id
+        }
+        this.toastService.show({
+          text: 'Пользователя с указанным e-mail не существует',
+          type: 'info'
+        })
+         throw new Error('123')
+      })
     )
   }
 

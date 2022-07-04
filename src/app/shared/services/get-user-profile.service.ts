@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IProfile } from '../../modules/profile/interfaces/profile.interface';
 import { LocalStorageService } from './local-storage.service';
+import { ELocalStorageKeys } from '../enum/local-storage-keys.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class GetUserProfileService {
   constructor(
     private localStorageService: LocalStorageService
   ) {
-    this.user = JSON.parse(this.localStorageService.getItem('profile'))
+    this.user = JSON.parse(this.localStorageService.getItem(ELocalStorageKeys.PROFILE))
   }
 
 }

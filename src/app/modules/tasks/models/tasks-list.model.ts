@@ -2,7 +2,7 @@ import { ITask } from '../interfaces/task.interface';
 
 export class TasksListModel {
 
-  private _tasks: ITask[];
+  private _tasks: ITask[] = [];
 
   constructor() {
   }

@@ -6,7 +6,13 @@
   margin-bottom: 20px;
   padding: $base-gutter * 3 $base-gutter * 4;
   width: $base-gutter * 40;
-  background-color: greenyellow;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.11);
+
+  &.success {
+    background-color: greenyellow;
+  }
+  &.info {
+    background-color: coral;
+  }
 }

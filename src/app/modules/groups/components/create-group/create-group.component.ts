@@ -8,6 +8,7 @@ import { switchMap } from 'rxjs';
 import { EUserGroupStatus } from '../../../../shared/enum/user-group-status.enum';
 import { GroupsModel } from '../../models/groups.model';
 import { EState } from '../../../../shared/enum/state.enum';
+import { ELocalStorageKeys } from '../../../../shared/enum/local-storage-keys.enum';
 
 @Component({
   selector: 'ad-create-group',
@@ -28,7 +29,7 @@ export class CreateGroupComponent implements OnInit {
     private dataBdService: DataBdService,
     private localStorageService: LocalStorageService
   ) {
-    this.user = JSON.parse(this.localStorageService.getItem('profile'))
+    this.user = JSON.parse(this.localStorageService.getItem(ELocalStorageKeys.PROFILE))
   }
 
   ngOnInit(): void {
@@ -61,7 +62,7 @@ export class CreateGroupComponent implements OnInit {
     const data = {
       creatorName: this.user.name,
       creatorId: this.user.id,
-      name: this.form.value.name
+      name: this.form.value.name,
     }
     return this.dataBdService.updateData(data, EBdTables.GROUPS)
   }
@@ -71,8 +72,9 @@ export class CreateGroupComponent implements OnInit {
       id,
       user_id: this.user.id,
       author: this.user.name,
-      // email: this.user.email,
-      status: EUserGroupStatus.MEMBER
+      email: this.user.email,
+      status: EUserGroupStatus.AUTHOR,
+      name: this.user.name
     }
     return this.dataBdService.createData(data, EBdTables.GROUPS_USERS)
   }
