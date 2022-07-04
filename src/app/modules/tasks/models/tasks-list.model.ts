@@ -1,12 +1,10 @@
-import { StateModel } from '../../../shared/models/state.model';
 import { ITask } from '../interfaces/task.interface';
 
-export class TasksListModel extends StateModel {
+export class TasksListModel {
 
   private _tasks: ITask[];
 
   constructor() {
-    super();
   }
 
   public get tasks(): ITask[] {

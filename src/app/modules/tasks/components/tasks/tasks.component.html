@@ -1,3 +1,10 @@
-<ad-create-task (reloadTasksList)="tasksListComponent.reloadList$.next(null)"></ad-create-task>
-<ad-tasks-list #tasksListComponent></ad-tasks-list>
+<ng-container *ngIf="tasks$ | async as model; else preloader">
+  <ad-create-task [model]="model" (reloadTasksList)="reloadTasks$.next(null)"></ad-create-task>
+  <ng-container *ngIf="model.isReady(); else preloader">
+    <ad-tasks-list [model]="model.tasksList"></ad-tasks-list>
+  </ng-container>
+</ng-container>
 
+<ng-template #preloader>
+  <ui-preloader></ui-preloader>
+</ng-template>

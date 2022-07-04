@@ -35,12 +35,10 @@ export class LoginComponent implements OnInit {
     this.isSubmitted = true;
     const login: string = this.form.value.login;
     const password: string = String(this.form.value.password);
-    console.log(this.form)
 
     if (this.form.valid) {
       this.authBdService.login(login, password).subscribe(
         (res: ILoginResponse) => {
-          console.log(res)
           this.toastService.show({
             text: 'Вы успешно авторизовались',
             type: 'success'

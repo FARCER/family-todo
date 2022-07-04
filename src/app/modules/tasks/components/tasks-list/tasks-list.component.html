@@ -1,15 +1,2 @@
 <h2>Мои задачи</h2>
-
-<ng-container *ngIf="tasks$ | async as tasks; else preloader">
-  <ng-container *ngIf="tasks.isReady(); else preloader">
-    <ad-task *ngFor="let task of tasks.tasks" [task]="task"></ad-task>
-  </ng-container>
-</ng-container>
-
-<ng-template #preloader>
-  <ui-preloader></ui-preloader>
-</ng-template>
-
-
-
-
+<ad-task *ngFor="let task of model.tasks" [task]="task"></ad-task>

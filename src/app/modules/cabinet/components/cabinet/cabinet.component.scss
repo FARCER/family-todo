@@ -6,6 +6,8 @@
 
 main {
   padding: 20px;
+  flex: 1;
+  position: relative;
   & > * {
     &:not(:last-child) {
       margin-bottom: 40px;

@@ -38,7 +38,6 @@ export class RegisterComponent implements OnInit {
     if (this.form.valid) {
       this.authBdService.register(login, password).subscribe(
         (res: IRegisterResponse) => {
-          console.log(res);
           this.toastService.show({
             text: 'Вы успешно зарегистрированы',
             type: 'success'
