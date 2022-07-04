@@ -1,8 +1,13 @@
 <ng-container *ngIf="myGroups$ | async as model; else preloader">
-  <ad-create-group></ad-create-group>
-  <div class="groups" *ngIf="model.myGroups.length">
-    <ad-group *ngFor="let group of model.myGroups" [model]="group"></ad-group>
-  </div>
+  <ad-create-group [model]="model" (createGroupEmit)="reloadGroups$.next(null)"></ad-create-group>
+  <ng-container *ngIf="model.isReady(); else preloader">
+    <ng-container *ngIf="model.myInvitations.length">
+      Вас пришлашают в группу {{model.myInvitations[0].author}}
+    </ng-container>
+    <div class="groups" *ngIf="model.myGroups?.length">
+      <ad-group *ngFor="let group of model.myGroups" [model]="group"></ad-group>
+    </div>
+  </ng-container>
 </ng-container>
 
 <ng-template #preloader>

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { from, map, Observable, of, pluck, startWith, switchMap } from 'rxjs';
+import { map, Observable, of, startWith, switchMap } from 'rxjs';
 import { IProfile } from '../interfaces/profile.interface';
 import { Profile } from '../models/profile.model';
 import { EState } from '../../../shared/enum/state.enum';
@@ -19,9 +19,7 @@ import { EBdTables } from '../../../shared/enum/bd-tables.enum';
 export class ProfileComponent implements OnInit {
 
   public profileModel$: Observable<Profile>;
-
   public form: FormGroup;
-
 
   constructor(
     private userBdService: UserBdService,
@@ -30,13 +28,11 @@ export class ProfileComponent implements OnInit {
     private localStorageService: LocalStorageService
   ) {
     console.log(this.userBdService.session)
-
   }
 
   ngOnInit(): void {
     this.initProfileModel();
   }
-
 
   private initProfileModel(): void {
     let model: Profile;
@@ -45,9 +41,8 @@ export class ProfileComponent implements OnInit {
       switchMap((profile: Profile) => {
         console.log(profile)
         model = profile;
-        return from(this.userBdService.profile);
+        return this.userBdService.profile;
       }),
-      pluck('data'),
       map((profile: IProfile) => {
         this.localStorageService.setItem('profile', JSON.stringify(profile));
         this.initForm(profile);

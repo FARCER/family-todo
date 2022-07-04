@@ -47,7 +47,7 @@ export class InviteToGroupComponent implements OnInit {
         switchMap((user_id: string) => {
           const data = {
             id: this.groupId,
-            user_email: email,
+            email: email,
             author: this.user.name,
             user_id,
           }

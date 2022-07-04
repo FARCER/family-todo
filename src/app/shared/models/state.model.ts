@@ -2,7 +2,6 @@ import { EState } from '../enum/state.enum';
 
 export class StateModel {
 
-
   private _state: EState = EState.LOADING;
 
 

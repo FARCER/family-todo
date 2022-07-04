@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { IProfile } from '../../../profile/interfaces/profile.interface';
@@ -6,6 +6,8 @@ import { LocalStorageService } from '../../../../shared/services/local-storage.s
 import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
 import { switchMap } from 'rxjs';
 import { EUserGroupStatus } from '../../../../shared/enum/user-group-status.enum';
+import { GroupsModel } from '../../models/groups.model';
+import { EState } from '../../../../shared/enum/state.enum';
 
 @Component({
   selector: 'ad-create-group',
@@ -13,6 +15,9 @@ import { EUserGroupStatus } from '../../../../shared/enum/user-group-status.enum
   styleUrls: ['./create-group.component.scss']
 })
 export class CreateGroupComponent implements OnInit {
+
+  @Output() public createGroupEmit: EventEmitter<void> = new EventEmitter<void>();
+  @Input() public model: GroupsModel;
 
   private isSubmitted: boolean = false;
   public form: FormGroup;
@@ -40,10 +45,12 @@ export class CreateGroupComponent implements OnInit {
   public submit(): void {
     this.isSubmitted = true;
     if (this.form.valid) {
+      this.model.state = EState.LOADING;
       this.createGroup().pipe(
         switchMap((res: any) => this.updateUserGroupsTable(res.data.id))
       ).subscribe(
         (res) => {
+          this.createGroupEmit.emit();
           console.log(res)
         }
       )

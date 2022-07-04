@@ -22,12 +22,12 @@ export class GroupsComponent implements OnInit {
   public myGroups$: Observable<GroupsModel>;
 
   private user: IProfile;
-  private reloadGroups$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  public reloadGroups$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   constructor(
     private localStorageService: LocalStorageService,
     private dataBdService: DataBdService,
-    private getUserProfileService: GetUserProfileService
+    private getUserProfileService: GetUserProfileService,
   ) {
     this.user = this.getUserProfileService.user;
   }
@@ -44,17 +44,32 @@ export class GroupsComponent implements OnInit {
           columns: 'id,name, users:id(email,status)',
           filterField: 'creatorId',
           filterType: EFilterType.ID
-        })])),
-        map(([res]) => {
-          console.log(res.data)
+        }),
+          this.dataBdService.getData({
+            table: EBdTables.GROUPS_USERS,
+            columns: 'author',
+            filterType: EFilterType.EMAIL,
+            filterField: 'email'
+          })
+        ])),
+        map(([res, res2]) => {
+          console.log(res2)
           const myGroups: GroupModel[] = res.data.map((group: IGroup) => new GroupModel(group));
+          const myInvitations: any = res2.data;
           if (myGroups?.length) {
             model.myGroups = myGroups;
+          }
+          if (myInvitations.length) {
+            model.myInvitations = myInvitations;
           }
           model.state = EState.READY;
           return model;
         })
       ))
     )
+  }
+
+  public createGroup() {
+
   }
 }
