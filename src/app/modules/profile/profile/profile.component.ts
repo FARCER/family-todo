@@ -7,6 +7,10 @@ import { EState } from '../../../shared/enum/state.enum';
 import { LocalStorageService } from '../../../shared/services/local-storage.service';
 import { PersonalDataModel } from '../models/personal-data.model';
 import { ELocalStorageKeys } from '../../../shared/enum/local-storage-keys.enum';
+import { IUpdatePersonalData } from '../interfaces/update-personal-data.interface';
+import { EBdTables } from '../../../shared/enum/bd-tables.enum';
+import { DataBdService } from '../../../shared/services/bd/data-bd.service';
+import { ToastService } from 'ad-kit';
 
 @Component({
   selector: 'ad-profile',
@@ -17,11 +21,15 @@ import { ELocalStorageKeys } from '../../../shared/enum/local-storage-keys.enum'
 export class ProfileComponent {
 
   public reloadProfile$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  public profileModel$: Observable<Profile>
+  public profileModel$: Observable<Profile>;
+
+  private isProfileUpdate: boolean = false;
 
   constructor(
     private userBdService: UserBdService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private dataBdService: DataBdService,
+    private toastService: ToastService
   ) {
     console.log(this.userBdService.session)
     this.initModel();
@@ -35,9 +43,26 @@ export class ProfileComponent {
           this.localStorageService.setItem(ELocalStorageKeys.PROFILE, JSON.stringify(profile));
           model.personalData = new PersonalDataModel(profile)
           model.state = EState.READY;
+          if (this.isProfileUpdate) {
+            this.isProfileUpdate = false;
+            this.toastService.show({
+              text: 'Обновление данных прошло успешно',
+              type: 'success'
+            })
+          }
           return model;
         }),
       ))
+    )
+  }
+
+  public updatePersonalData(updateData: IUpdatePersonalData, model: Profile): void {
+    model.state = EState.LOADING;
+    this.isProfileUpdate = true;
+    this.dataBdService.updateData(updateData, EBdTables.USERS).subscribe(
+      () => {
+        this.reloadProfile$.next(null)
+      }
     )
   }
 

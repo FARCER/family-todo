@@ -2,12 +2,9 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 import { Observable } from 'rxjs';
 import { Profile } from '../../models/profile.model';
 import { FormControl, FormGroup } from '@angular/forms';
-import { IProfile } from '../../interfaces/profile.interface';
-import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
-import { AuthBdService } from '../../../../shared/services/bd/auth-bd.service';
-import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { UserBdService } from '../../../../shared/services/bd/user-bd.service';
 import { PersonalDataModel } from '../../models/personal-data.model';
+import { IUpdatePersonalData } from '../../interfaces/update-personal-data.interface';
 
 @Component({
   selector: 'ad-personal-data-form',
@@ -18,16 +15,14 @@ import { PersonalDataModel } from '../../models/personal-data.model';
 export class PersonalDataFormComponent implements OnInit {
 
   @Input() public model: PersonalDataModel;
-  @Output() public updateData: EventEmitter<void> = new EventEmitter<void>();
+  @Output() public updateData: EventEmitter<IUpdatePersonalData> = new EventEmitter<IUpdatePersonalData>();
 
 
   public profileModel$: Observable<Profile>;
   public form: FormGroup;
 
   constructor(
-    private userBdService: UserBdService,
-    private authBdService: AuthBdService,
-    private dataBdService: DataBdService) {
+    private userBdService: UserBdService) {
   }
 
   ngOnInit(): void {
@@ -44,25 +39,16 @@ export class PersonalDataFormComponent implements OnInit {
   }
 
   public updateProfile(): void {
-    const profile: IProfile = {
+    const updateData: IUpdatePersonalData = {
       name: this.form.value.name,
       surName: this.form.value.surName,
       patronymic: this.form.value.patronymic,
       dateOfBirth: this.form.value.dateOfBirth,
-      email: this.userBdService.user?.email
-    }
-    const updateData = {
-      ...profile,
+      email: this.userBdService.user?.email,
       id: this.userBdService.user?.id,
       updated_at: new Date(),
     }
-    console.log(this.form)
-    this.dataBdService.updateData(updateData, EBdTables.USERS).subscribe(
-      (res) => {
-        this.updateData.emit();
-        console.log(res);
-      }
-    )
+    this.updateData.emit(updateData);
   }
 
   public canSubmit(): boolean {

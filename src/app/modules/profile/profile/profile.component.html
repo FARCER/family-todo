@@ -1,6 +1,6 @@
 <ng-container *ngIf="profileModel$ | async as model; else preloader">
   <ng-container *ngIf="model.isReady(); else preloader">
-    <ad-personal-data-form (updateData)="reloadProfile$.next(null)"
+    <ad-personal-data-form (updateData)="updatePersonalData($event, model)"
                            [model]="model.personalData"></ad-personal-data-form>
     <ad-auth-data-form></ad-auth-data-form>
   </ng-container>
