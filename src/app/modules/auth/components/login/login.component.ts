@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthBdService } from '../../../../shared/services/bd/auth-bd.service';
 import { ToastService } from 'ad-kit';
 import { ILoginResponse } from '../../interfaces/login-response.interface';
+import { ApiError } from '@supabase/gotrue-js/src/lib/types';
 
 @Component({
   selector: 'ad-login',
@@ -39,15 +40,27 @@ export class LoginComponent implements OnInit {
     if (this.form.valid) {
       this.authBdService.login(login, password).subscribe(
         (res: ILoginResponse) => {
+          if (res.error) {
+            this.handleLoginErrors(res.error);
+            return;
+          }
           this.toastService.show({
             text: 'Вы успешно авторизовались',
             type: 'success'
           })
 
           this.router.navigate(['/cabinet/profile'])
-        }
+        },
       )
     }
+  }
+
+  private handleLoginErrors(error: ApiError): void {
+    this.toastService.show({
+      text: error.message,
+      type: 'warning'
+    })
+
   }
 
   public validateLoginFieldType(): boolean {
