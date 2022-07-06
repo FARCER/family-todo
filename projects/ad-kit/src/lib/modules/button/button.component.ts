@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
 
 @Component({
   selector: 'ui-button',
@@ -10,5 +10,5 @@ export class ButtonComponent {
 
   @Input() public type: string = 'submit';
   @Input() public disabled: boolean = false;
-
+  @Input() public mod: string = 'false';
 }

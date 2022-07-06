@@ -1,0 +1,16 @@
+@import "./projects/ad-kit/src/lib/assets/vars";
+
+:host {
+  align-items: center;
+  display: flex;
+}
+
+.actions {
+  display: flex;
+  margin-left: $base-gutter;
+  & > * {
+    &:not(:last-child) {
+      margin-right: $base-gutter;
+    }
+  }
+}

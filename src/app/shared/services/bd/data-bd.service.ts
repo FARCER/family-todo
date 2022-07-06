@@ -47,8 +47,11 @@ export class DataBdService {
     return from(this.getSupabaseClientService.getSupabaseClient().from(table).upsert(data).single())
   }
 
-
   public createData(data: any, table: string): Observable<any> {
     return from(this.getSupabaseClientService.getSupabaseClient().from(table).insert(data))
+  }
+
+  public deleteData(id: any, table: string): Observable<any> {
+    return from(this.getSupabaseClientService.getSupabaseClient().from(table).delete().match({ id }))
   }
 }

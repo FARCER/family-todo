@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
             type: 'success'
           })
 
-          this.router.navigate(['/cabinet'])
+          this.router.navigate(['/cabinet/profile'])
         }
       )
     }

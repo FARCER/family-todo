@@ -69,7 +69,7 @@ export class CreateGroupComponent implements OnInit {
 
   private updateUserGroupsTable(id: string) {
     const data = {
-      id,
+      group_id: id,
       user_id: this.user.id,
       author: this.user.name,
       email: this.user.email,

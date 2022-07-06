@@ -1,13 +1,19 @@
-:host {
-  button {
+button {
+  height: 40px;
+  line-height: 38px;
+  padding: 0 16px;
+  background-color: #c2c2c2;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 0;
 
-    height: 40px;
-    line-height: 38px;
-    padding: 0 16px;
-    background-color: #c2c2c2;
-    display: inline-block;
-    cursor: pointer;
-    border-radius: 8px;
-    border: 0;
+  &.success {
+    background-color: greenyellow;
+  }
+
+  &.danger {
+    background-color: orangered;
   }
 }
+

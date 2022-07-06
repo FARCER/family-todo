@@ -18,16 +18,15 @@ export class CabinetAsideComponent {
     private authBdService: AuthBdService,
     private router: Router,
     private toastService: ToastService,
-    private localStorageService: LocalStorageService) {
+    private localStorageService: LocalStorageService,) {
   }
 
   public logout(): void {
     this.authBdService.logout().subscribe(
       (res: ILogoutResponse) => {
-        console.log(res);
         this.router.navigate(['']);
         this.toastService.show({ text: 'Вы успешно вышли из личного кабинета', type: 'success' })
-        this.localStorageService.setItem(ELocalStorageKeys.PROFILE, null)
+        this.localStorageService.setItem(ELocalStorageKeys.PROFILE, null);
       }
     )
   }

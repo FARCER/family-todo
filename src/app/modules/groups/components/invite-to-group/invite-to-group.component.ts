@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
-import { GetUserProfileService } from '../../../../shared/services/get-user-profile.service';
 import { IProfile } from '../../../profile/interfaces/profile.interface';
 import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
 import { EFilterType } from '../../../../shared/enum/filter-type.enum';
-import { map, Observable, pluck, switchMap, throwError } from 'rxjs';
+import { map, Observable, pluck, switchMap } from 'rxjs';
 import { ToastService } from 'ad-kit';
+import { LocalStorageService } from '../../../../shared/services/local-storage.service';
+import { ELocalStorageKeys } from '../../../../shared/enum/local-storage-keys.enum';
 
 @Component({
   selector: 'ad-invite-to-group',
@@ -25,10 +26,10 @@ export class InviteToGroupComponent implements OnInit {
 
   constructor(
     private dataBdService: DataBdService,
-    private getUserProfileService: GetUserProfileService,
+    private localStorageService: LocalStorageService,
     private toastService: ToastService
   ) {
-    this.user = this.getUserProfileService.user;
+    this.user = JSON.parse(this.localStorageService.getItem(ELocalStorageKeys.PROFILE));
   }
 
   ngOnInit(): void {
@@ -48,7 +49,7 @@ export class InviteToGroupComponent implements OnInit {
       this.getUserId().pipe(
         switchMap((user_id: string) => {
           const data = {
-            id: this.groupId,
+            group_id: this.groupId,
             email: email,
             author: this.user.name,
             user_id,
@@ -81,7 +82,7 @@ export class InviteToGroupComponent implements OnInit {
           text: 'Пользователя с указанным e-mail не существует',
           type: 'info'
         })
-         throw new Error('123')
+        throw new Error('123')
       })
     )
   }

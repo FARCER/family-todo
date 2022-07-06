@@ -5,13 +5,14 @@ import { BehaviorSubject, combineLatest, forkJoin, map, Observable, of, pluck, s
 import { GroupsModel } from '../../models/groups.model';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { EState } from '../../../../shared/enum/state.enum';
-import { GetUserProfileService } from '../../../../shared/services/get-user-profile.service';
 import { EFilterType } from '../../../../shared/enum/filter-type.enum';
 import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
 import { GroupModel } from '../../models/group.model';
 import { IGroup } from '../../interfaces/group.interface';
 import { EUserGroupStatus } from '../../../../shared/enum/user-group-status.enum';
 import { IUserGroupStatus } from '../../interfaces/user-group-status.interface';
+import { IMyInvitation } from '../../interfaces/my-invitation.interface';
+import { ELocalStorageKeys } from '../../../../shared/enum/local-storage-keys.enum';
 
 @Component({
   selector: 'ad-groups',
@@ -29,9 +30,8 @@ export class GroupsComponent implements OnInit {
   constructor(
     private localStorageService: LocalStorageService,
     private dataBdService: DataBdService,
-    private getUserProfileService: GetUserProfileService,
   ) {
-    this.user = this.getUserProfileService.user;
+    this.user = JSON.parse(this.localStorageService.getItem(ELocalStorageKeys.PROFILE));
   }
 
   ngOnInit(): void {
@@ -43,22 +43,19 @@ export class GroupsComponent implements OnInit {
       switchMap((model: GroupsModel) => combineLatest([this.reloadGroups$]).pipe(
         switchMap(() => forkJoin([this.dataBdService.getData({
           table: EBdTables.GROUPS,
-          columns: 'id,name, users:id(email,status,name)',
+          columns: 'id, name, users:id(email, status, name)',
           filterField: 'creatorId',
           filterType: EFilterType.ID
         }),
           this.getInvitedGroups()
         ])),
-        map(([res, res2]) => {
+        map(([res, res2]: [any, IMyInvitation[]]) => {
           const myGroups: GroupModel[] = res.data.map((group: IGroup) => new GroupModel(group));
-          const myInvitations: any = res2;
-          console.log(res2)
+          const myInvitations: IMyInvitation[] = res2;
           if (myGroups?.length) {
             model.myGroups = myGroups;
           }
-          if (myInvitations.length) {
-            model.myInvitations = myInvitations;
-          }
+          model.myInvitations = myInvitations;
           model.state = EState.READY;
           return model;
         })
@@ -69,12 +66,20 @@ export class GroupsComponent implements OnInit {
   private getInvitedGroups(): Observable<any> {
     return this.dataBdService.getData({
       table: EBdTables.GROUPS_USERS,
-      columns: 'author,status',
+      columns: 'id, author, status',
       filterType: EFilterType.EMAIL,
       filterField: 'email'
     }).pipe(
       pluck('data'),
       map((res: IUserGroupStatus[]) => res.filter((t: IUserGroupStatus) => t.status === EUserGroupStatus.INVITED))
+    )
+  }
+
+  public declineInvitationEmit(id: string, model: GroupsModel) {
+    model.state = EState.LOADING;
+
+    this.dataBdService.deleteData(id, EBdTables.GROUPS_USERS).subscribe(
+      () => this.reloadGroups$.next(null)
     )
   }
 }

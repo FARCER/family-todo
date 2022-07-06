@@ -2,7 +2,9 @@
   <ad-create-group [model]="model" (createGroupEmit)="reloadGroups$.next(null)"></ad-create-group>
   <ng-container *ngIf="model.isReady(); else preloader">
     <ng-container *ngIf="model.myInvitations?.length">
-      Вас пришлашают в группу {{model.myInvitations[0].author}}
+      <ad-my-invitation (declineInvitationEmit)="declineInvitationEmit($event, model)"
+                        *ngFor="let invitation of model.myInvitations" [data]="invitation">
+      </ad-my-invitation>
     </ng-container>
     <div class="groups" *ngIf="model.myGroups?.length">
       <ad-group *ngFor="let group of model.myGroups" [model]="group"></ad-group>
