@@ -1,8 +1,10 @@
 <h1>Мой профиль</h1>
-<form (ngSubmit)="updateProfile()" [formGroup]="form">
+<form *ngIf="!model.isError" (ngSubmit)="updateProfile()" [formGroup]="form">
   <ui-input [formControlName]="'name'" [label]="'Имя'"></ui-input>
   <ui-input [formControlName]="'surName'" [label]="'Фамилия'"></ui-input>
   <ui-input [formControlName]="'patronymic'" [label]="'Отчество'"></ui-input>
   <ui-input [formControlName]="'dateOfBirth'" type="date" [label]="'Дата рождения'"></ui-input>
   <ui-button [disabled]="!canSubmit()">Обновить</ui-button>
 </form>
+
+<p *ngIf="model.isError"> Данные профиля не получены. Обновите страницу</p>

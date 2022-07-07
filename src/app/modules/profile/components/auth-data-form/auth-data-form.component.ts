@@ -30,6 +30,7 @@ export class AuthDataFormComponent implements OnInit {
   }
 
   public update(): void {
+    // TODO Добавить корректную работу через логин и пароль
     const updateData = {
       email: this.authForm.value.email
     }

@@ -4,14 +4,18 @@ export class PersonalDataModel {
   private _name: string;
   private _surName: string;
   private _patronymic: string;
-  private _dateOfBirth: string
-  private id?: string;
+  private _dateOfBirth: string;
+  private _isError: boolean;
 
   constructor(profile: IProfile) {
-    this._name = profile?.name || '';
-    this._surName = profile?.surName || '';
-    this._patronymic = profile?.patronymic || '';
-    this._dateOfBirth = profile?.dateOfBirth || '';
+    if (profile) {
+      this._name = profile?.name || '';
+      this._surName = profile?.surName || '';
+      this._patronymic = profile?.patronymic || '';
+      this._dateOfBirth = profile?.dateOfBirth || '';
+    } else {
+      this._isError = true;
+    }
   }
 
   public get name(): string {
@@ -28,6 +32,10 @@ export class PersonalDataModel {
 
   public get dateOfBirth(): string {
     return this._dateOfBirth;
+  }
+
+  public get isError(): boolean {
+    return this._isError;
   }
 
 }

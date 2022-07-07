@@ -82,4 +82,33 @@ export class GroupsComponent implements OnInit {
       () => this.reloadGroups$.next(null)
     )
   }
+
+  public createGroup(groupName: string, model: GroupsModel) {
+    const data = {
+      creatorName: this.user.name,
+      creatorId: this.user.id,
+      name: groupName,
+    }
+    model.state = EState.LOADING;
+
+    this.dataBdService.updateData(data, EBdTables.GROUPS).pipe(
+      switchMap((res: any) => this.updateUserGroupsTable(res.data.id))
+    ).subscribe(
+      ()=>{
+        this.reloadGroups$.next(null)
+      }
+    )
+  }
+
+  private updateUserGroupsTable(id: string) {
+    const data = {
+      group_id: id,
+      user_id: this.user.id,
+      author: this.user.name,
+      email: this.user.email,
+      status: EUserGroupStatus.AUTHOR,
+      name: this.user.name
+    }
+    return this.dataBdService.createData(data, EBdTables.GROUPS_USERS)
+  }
 }

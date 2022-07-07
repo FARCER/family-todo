@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { UserBdService } from '../../../shared/services/bd/user-bd.service';
 import { BehaviorSubject, combineLatest, map, Observable, of, switchMap } from 'rxjs';
 import { Profile } from '../models/profile.model';
@@ -29,7 +29,8 @@ export class ProfileComponent {
     private userBdService: UserBdService,
     private localStorageService: LocalStorageService,
     private dataBdService: DataBdService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     console.log(this.userBdService.session)
     this.initModel();
@@ -40,6 +41,7 @@ export class ProfileComponent {
       switchMap((model: Profile) => combineLatest([this.reloadProfile$]).pipe(
         switchMap(() => this.userBdService.profile),
         map((profile: IProfile) => {
+          console.log(profile)
           this.localStorageService.setItem(ELocalStorageKeys.PROFILE, JSON.stringify(profile));
           model.personalData = new PersonalDataModel(profile)
           model.state = EState.READY;
@@ -60,7 +62,17 @@ export class ProfileComponent {
     model.state = EState.LOADING;
     this.isProfileUpdate = true;
     this.dataBdService.updateData(updateData, EBdTables.USERS).subscribe(
-      () => {
+      (res: any) => {
+        if (res.error) {
+          console.log(res);
+          model.state = EState.READY;
+          this.changeDetectorRef.markForCheck();
+          this.toastService.show({
+            text: 'При обновлении данных произошла ошибка. Попробуйте снова',
+            type: 'warning'
+          })
+          return;
+        }
         this.reloadProfile$.next(null)
       }
     )

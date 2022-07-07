@@ -3,11 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { IProfile } from '../../../profile/interfaces/profile.interface';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
-import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
-import { switchMap } from 'rxjs';
-import { EUserGroupStatus } from '../../../../shared/enum/user-group-status.enum';
 import { GroupsModel } from '../../models/groups.model';
-import { EState } from '../../../../shared/enum/state.enum';
 import { ELocalStorageKeys } from '../../../../shared/enum/local-storage-keys.enum';
 
 @Component({
@@ -17,7 +13,7 @@ import { ELocalStorageKeys } from '../../../../shared/enum/local-storage-keys.en
 })
 export class CreateGroupComponent implements OnInit {
 
-  @Output() public createGroupEmit: EventEmitter<void> = new EventEmitter<void>();
+  @Output() public createGroupEmit: EventEmitter<string> = new EventEmitter<string>();
   @Input() public model: GroupsModel;
 
   private isSubmitted: boolean = false;
@@ -42,43 +38,12 @@ export class CreateGroupComponent implements OnInit {
     })
   }
 
-
   public submit(): void {
     this.isSubmitted = true;
     if (this.form.valid) {
-      this.model.state = EState.LOADING;
-      this.createGroup().pipe(
-        switchMap((res: any) => this.updateUserGroupsTable(res.data.id))
-      ).subscribe(
-        (res) => {
-          this.createGroupEmit.emit();
-          console.log(res)
-        }
-      )
+      this.createGroupEmit.emit(this.form.value.name);
     }
   }
-
-  private createGroup() {
-    const data = {
-      creatorName: this.user.name,
-      creatorId: this.user.id,
-      name: this.form.value.name,
-    }
-    return this.dataBdService.updateData(data, EBdTables.GROUPS)
-  }
-
-  private updateUserGroupsTable(id: string) {
-    const data = {
-      group_id: id,
-      user_id: this.user.id,
-      author: this.user.name,
-      email: this.user.email,
-      status: EUserGroupStatus.AUTHOR,
-      name: this.user.name
-    }
-    return this.dataBdService.createData(data, EBdTables.GROUPS_USERS)
-  }
-
 
   public validateNameField() {
     return this.isSubmitted && this.form.controls['name'].errors?.['required'];
