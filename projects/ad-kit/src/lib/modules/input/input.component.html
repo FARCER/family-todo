@@ -2,3 +2,4 @@
 <input [type]="type" [value]="value" (input)="inputChange($event)">
 <span class="error" *ngIf="requiredError">Данное поле обязательно для заполнения</span>
 <span class="error" *ngIf="emailField">E-mail указан некорректно</span>
+<span class="error" *ngIf="itselfEmail">Вы не можете указывать свой e-mail</span>

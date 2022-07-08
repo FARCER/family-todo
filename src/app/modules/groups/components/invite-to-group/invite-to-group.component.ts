@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { IProfile } from '../../../profile/interfaces/profile.interface';
@@ -8,6 +16,7 @@ import { map, Observable, pluck, switchMap } from 'rxjs';
 import { ToastService } from 'ad-kit';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { ELocalStorageKeys } from '../../../../shared/enum/local-storage-keys.enum';
+import { itselfEmailValidator } from '../../../../shared/directives/itself-email.directive';
 
 @Component({
   selector: 'ad-invite-to-group',
@@ -18,16 +27,17 @@ import { ELocalStorageKeys } from '../../../../shared/enum/local-storage-keys.en
 export class InviteToGroupComponent implements OnInit {
 
   @Input() public groupId: string = '';
-  public form: FormGroup;
+  @Output() public updateGroup: EventEmitter<void> = new EventEmitter<void>();
 
   private isSubmitted: boolean = false;
   private user: IProfile;
 
+  public form: FormGroup;
 
   constructor(
     private dataBdService: DataBdService,
     private localStorageService: LocalStorageService,
-    private toastService: ToastService
+    private toastService: ToastService,
   ) {
     this.user = JSON.parse(this.localStorageService.getItem(ELocalStorageKeys.PROFILE));
   }
@@ -38,7 +48,10 @@ export class InviteToGroupComponent implements OnInit {
 
   private initForm(): void {
     this.form = new FormGroup({
-      email: new FormControl('', [Validators.required])
+      email: new FormControl('', [
+        Validators.required,
+        Validators.email,
+        itselfEmailValidator(this.user.email || '')])
     })
   }
 
@@ -50,16 +63,19 @@ export class InviteToGroupComponent implements OnInit {
         switchMap((user_id: string) => {
           const data = {
             group_id: this.groupId,
-            email: email,
+            email,
             author: this.user.name,
             user_id,
           }
           return this.dataBdService.createData(data, EBdTables.GROUPS_USERS)
-
         })
       ).subscribe(
-        (res) => {
-          console.log(res)
+        () => {
+          this.toastService.show({
+            text: 'Пользователь успешно приглашен в вашу группу',
+            type: 'success'
+          })
+          this.updateGroup.emit();
         }
       )
     }
@@ -89,6 +105,14 @@ export class InviteToGroupComponent implements OnInit {
 
   public validateEmailField() {
     return this.isSubmitted && this.form.controls['email'].errors?.['required'];
+  }
+
+  public validateEmailFieldType(): boolean {
+    return this.isSubmitted && this.form.controls['email'].errors?.['email'];
+  }
+
+  public validateItselfEmail(): boolean {
+    return this.isSubmitted && this.form.controls['email'].errors?.['itselfEmail'];
   }
 
 }

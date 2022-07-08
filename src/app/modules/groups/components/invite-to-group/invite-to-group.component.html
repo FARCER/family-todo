@@ -1,6 +1,9 @@
 <h4>Пригласить в группу</h4>
 
 <form [formGroup]="form" (ngSubmit)="submit()">
-  <ui-input label="E-mail" [requiredError]="validateEmailField()" formControlName="email"></ui-input>
+  <ui-input label="E-mail" [itselfEmail]="validateItselfEmail()" [emailField]="validateEmailFieldType()"
+            [requiredError]="validateEmailField()"
+            formControlName="email"></ui-input>
   <ui-button>Пригласить</ui-button>
 </form>
+

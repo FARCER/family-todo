@@ -25,6 +25,7 @@ export class InputComponent implements ControlValueAccessor {
 
   @Input() public requiredError: boolean = false;
   @Input() public emailField: boolean = false;
+  @Input() public itselfEmail: boolean = false;
 
   public value: string = '';
 
