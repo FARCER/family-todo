@@ -4,6 +4,7 @@ import { UserBdService } from './user-bd.service';
 import { from, Observable } from 'rxjs';
 import { IGetDataRequest } from '../../interfaces/get-data-request.interface';
 import { EFilterType } from '../../enum/filter-type.enum';
+import { EBdTables } from '../../enum/bd-tables.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -53,5 +54,15 @@ export class DataBdService {
 
   public deleteData(id: any, table: string): Observable<any> {
     return from(this.getSupabaseClientService.getSupabaseClient().from(table).delete().match({ id }))
+  }
+
+  public getUserByEmail(email: string): Observable<any> {
+    return this.getOneData({
+      table: EBdTables.USERS,
+      filterType: EFilterType.EMAIL,
+      filterField: 'email',
+      columns: 'id',
+      customFilterField: email
+    })
   }
 }

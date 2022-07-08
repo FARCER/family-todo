@@ -3,6 +3,8 @@ import { GetSupabaseClientService } from './get-supabase-client.service';
 import { EBdTables } from '../../enum/bd-tables.enum';
 import { from, map, Observable, pluck } from 'rxjs';
 import { IProfile } from '../../../modules/profile/interfaces/profile.interface';
+import { EFilterType } from '../../enum/filter-type.enum';
+import { ErrorCodes } from '../../enum/error-codes.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,7 @@ import { IProfile } from '../../../modules/profile/interfaces/profile.interface'
 export class UserBdService {
 
   constructor(
-    private getSupabaseClientService: GetSupabaseClientService
+    private getSupabaseClientService: GetSupabaseClientService,
   ) {
   }
 
@@ -33,8 +35,8 @@ export class UserBdService {
     );
   }
 
-  private checkEmptyUser(res: any): { data:IProfile } {
-    if (res?.error?.code === 'PGRST116') {
+  private checkEmptyUser(res: any): { data: IProfile } {
+    if (res?.error?.code === ErrorCodes.NOT_FOUND_IN_DATABASE) {
       return {
         data: {
           name: '',
