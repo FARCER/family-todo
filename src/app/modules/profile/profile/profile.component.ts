@@ -61,7 +61,7 @@ export class ProfileComponent {
   public updatePersonalData(updateData: IUpdatePersonalData, model: Profile): void {
     model.state = EState.LOADING;
     this.isProfileUpdate = true;
-    this.dataBdService.updateData(updateData, EBdTables.USERS).subscribe(
+    this.dataBdService.upsertData(updateData, EBdTables.USERS).subscribe(
       (res: any) => {
         if (res.error) {
           console.log(res);

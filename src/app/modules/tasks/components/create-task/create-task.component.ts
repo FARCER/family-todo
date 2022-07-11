@@ -44,7 +44,7 @@ export class CreateTaskComponent implements OnInit {
     }
     if (this.form.valid) {
       this.model.state = EState.LOADING;
-      this.dataBdService.updateData(data, EBdTables.TODOS).subscribe(
+      this.dataBdService.upsertData(data, EBdTables.TODOS).subscribe(
         (res) => {
           this.reloadTasksList.emit();
           this.form.reset();

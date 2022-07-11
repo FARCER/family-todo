@@ -13,6 +13,7 @@ import { EUserGroupStatus } from '../../../../shared/enum/user-group-status.enum
 import { IUserGroupStatus } from '../../interfaces/user-group-status.interface';
 import { IMyInvitation } from '../../interfaces/my-invitation.interface';
 import { ELocalStorageKeys } from '../../../../shared/enum/local-storage-keys.enum';
+import { IInvitationAnswer } from '../../interfaces/invitation-answer.interface';
 
 @Component({
   selector: 'ad-groups',
@@ -75,10 +76,27 @@ export class GroupsComponent implements OnInit {
     )
   }
 
-  public declineInvitationEmit(id: string, model: GroupsModel) {
+  public invitationResultEmit(answer: IInvitationAnswer, model: GroupsModel) {
     model.state = EState.LOADING;
+    answer.accept ? this.acceptInvitation(answer.id) : this.refuseInvitation(answer.id)
+  }
 
-    this.dataBdService.deleteData(id, EBdTables.GROUPS_USERS).subscribe(
+  private acceptInvitation(id: string): void {
+    const data: any = {
+      id,
+      user_id: this.user.id,
+      status: EUserGroupStatus.MEMBER,
+      name: this.user.name
+    }
+    this.dataBdService.updateData(data, EBdTables.GROUPS_USERS, { id }).subscribe(
+      (res: any) => {
+        console.log(res)
+      }
+    )
+  }
+
+  private refuseInvitation(group_id: string): void {
+    this.dataBdService.deleteData(group_id, EBdTables.GROUPS_USERS).subscribe(
       () => this.reloadGroups$.next(null)
     )
   }
@@ -91,10 +109,10 @@ export class GroupsComponent implements OnInit {
     }
     model.state = EState.LOADING;
 
-    this.dataBdService.updateData(data, EBdTables.GROUPS).pipe(
+    this.dataBdService.upsertData(data, EBdTables.GROUPS).pipe(
       switchMap((res: any) => this.updateUserGroupsTable(res.data.id))
     ).subscribe(
-      ()=>{
+      () => {
         this.reloadGroups$.next(null)
       }
     )

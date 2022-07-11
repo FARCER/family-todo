@@ -1,5 +1,5 @@
 <span><b>{{data.author}}</b> приглашает вас в группу</span>
 <div class="actions">
-  <ui-button [mod]="'success'" (click)="accept()">Вступить</ui-button>
-  <ui-button [mod]="'danger'" (click)="decline()">Отказаться</ui-button>
+  <ui-button [mod]="'success'" (click)="answer(true)">Вступить</ui-button>
+  <ui-button [mod]="'danger'" (click)="answer(false)">Отказаться</ui-button>
 </div>

@@ -2,7 +2,7 @@
   <ng-container *ngIf="model.isReady(); else preloader">
     <ad-create-group [model]="model" (createGroupEmit)="createGroup($event, model)"></ad-create-group>
     <ng-container *ngIf="model.myInvitations?.length">
-      <ad-my-invitation (declineInvitationEmit)="declineInvitationEmit($event, model)"
+      <ad-my-invitation (invitationResultEmit)="invitationResultEmit($event, model)"
                         *ngFor="let invitation of model.myInvitations" [data]="invitation">
       </ad-my-invitation>
     </ng-container>

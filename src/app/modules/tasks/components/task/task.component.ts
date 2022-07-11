@@ -28,7 +28,7 @@ export class TaskComponent {
       user_id: this.task.user_id,
       title: this.task.title
     }
-    this.dataBdService.updateData(updateData, EBdTables.TODOS).subscribe()
+    this.dataBdService.upsertData(updateData, EBdTables.TODOS).subscribe()
   }
 
 }

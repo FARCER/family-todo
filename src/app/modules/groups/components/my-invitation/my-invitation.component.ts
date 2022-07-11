@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { IMyInvitation } from '../../interfaces/my-invitation.interface';
+import { IInvitationAnswer } from '../../interfaces/invitation-answer.interface';
 
 @Component({
   selector: 'ad-my-invitation',
@@ -10,18 +11,17 @@ import { IMyInvitation } from '../../interfaces/my-invitation.interface';
 export class MyInvitationComponent {
 
   @Input() public data: IMyInvitation;
-  @Output() public declineInvitationEmit: EventEmitter<string> = new EventEmitter<string>();
+  @Output() public invitationResultEmit: EventEmitter<IInvitationAnswer> = new EventEmitter<IInvitationAnswer>();
 
   constructor(
   ) {
   }
 
-  public accept(): void {
-
-  }
-
-  public decline(): void {
-    this.declineInvitationEmit.emit(this.data.id);
+  public answer(accept: boolean): void {
+    this.invitationResultEmit.emit({
+      accept,
+      id: this.data.id
+    });
   }
 
 

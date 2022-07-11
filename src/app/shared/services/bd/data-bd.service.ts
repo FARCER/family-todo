@@ -44,8 +44,12 @@ export class DataBdService {
     return (request.filterType === EFilterType.ID ? this.userBdService.user?.id : this.userBdService.user?.email) || '';
   }
 
-  public updateData(data: any, table: string): Observable<any> {
+  public upsertData(data: any, table: string): Observable<any> {
     return from(this.getSupabaseClientService.getSupabaseClient().from(table).upsert(data).single())
+  }
+
+  public updateData(data: any, table: string, match: any): Observable<any> {
+    return from(this.getSupabaseClientService.getSupabaseClient().from(table).update(data).match(match).single())
   }
 
   public createData(data: any, table: string): Observable<any> {
