@@ -20,7 +20,7 @@ export class InputComponent implements ControlValueAccessor {
 
   @HostBinding('class.is-error')
   get hasError(): boolean {
-    return this.requiredError || this.emailField
+    return this.requiredError || this.emailField || this.itselfEmail
   }
 
   @Input() public requiredError: boolean = false;

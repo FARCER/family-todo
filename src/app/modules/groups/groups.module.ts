@@ -7,6 +7,7 @@ import { InviteToGroupComponent } from './components/invite-to-group/invite-to-g
 import { CreateGroupComponent } from './components/create-group/create-group.component';
 import { GroupComponent } from './components/group/group.component';
 import { MyInvitationComponent } from './components/my-invitation/my-invitation.component';
+import { SharedModule } from '../../shared/shared.module';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { MyInvitationComponent } from './components/my-invitation/my-invitation.
   imports: [
     CommonModule,
     AdKitModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
   ]
 })
 export class GroupsModule {

@@ -14,7 +14,7 @@
       <tbody>
       <tr *ngFor="let user of model.users">
         <td>{{user.email}}</td>
-        <td>{{user.status}}</td>
+        <td>{{user.status | userGroupStatus}}</td>
         <td>{{user.name}}</td>
       </tr>
       </tbody>
