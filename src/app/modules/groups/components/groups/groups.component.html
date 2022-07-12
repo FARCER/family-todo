@@ -7,7 +7,8 @@
       </ad-my-invitation>
     </ng-container>
     <div class="groups" *ngIf="model.myGroups?.length">
-      <ad-group *ngFor="let group of model.myGroups" [model]="group"></ad-group>
+      <ad-group *ngFor="let group of model.myGroups" [model]="group"
+                (deleteGroupEmit)="deleteGroup($event, model)"></ad-group>
     </div>
   </ng-container>
 </ng-container>

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { GroupModel } from '../../models/group.model';
 import { BehaviorSubject, catchError, combineLatest, map, Observable, of, pluck, switchMap, throwError } from 'rxjs';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
@@ -22,6 +22,9 @@ import { ErrorCodes } from '../../../../shared/enum/error-codes.enum';
 export class GroupComponent implements OnInit {
 
   @Input() public model: GroupModel;
+  @Output() public deleteGroupEmit: EventEmitter<string> = new EventEmitter<string>();
+
+
   @ViewChild('adInviteToGroup') private inviteToGroupComponent: InviteToGroupComponent;
 
   public model$: Observable<GroupModel>;
@@ -59,12 +62,12 @@ export class GroupComponent implements OnInit {
   private inviteUserToGroup(model: GroupModel): Observable<GroupModel> {
     model.state = EState.LOADING;
     return this.getUserId().pipe(
-      switchMap((user_id: string) => {
+      switchMap((userId: string) => {
         const data = {
-          group_id: model.id,
+          groupId: model.id,
           email: this.inviteUserEmail,
           author: this.user.name,
-          user_id,
+          userId,
         }
         return this.dataBdService.createData(data, EBdTables.GROUPS_USERS)
       }),
@@ -119,4 +122,10 @@ export class GroupComponent implements OnInit {
       })
     )
   }
+
+  public deleteGroup(model: GroupModel): void {
+    this.deleteGroupEmit.emit(model.id)
+
+  }
+
 }

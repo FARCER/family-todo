@@ -23,9 +23,9 @@ export class TaskComponent {
 
   public toggleTask(isCompleted: boolean): void {
     this.task.isCompleted = !this.task.isCompleted;
-    const updateData: any = {
+    const updateData: ITask = {
       isCompleted,
-      user_id: this.task.user_id,
+      userId: this.task.userId,
       title: this.task.title
     }
     this.dataBdService.upsertData(updateData, EBdTables.TODOS).subscribe()

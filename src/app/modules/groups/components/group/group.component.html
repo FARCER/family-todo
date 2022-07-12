@@ -1,6 +1,7 @@
 <ng-container *ngIf="model$ | async as model">
   <div class="header">
     <h2>{{model.name}}</h2>
+    <ui-button (click)="deleteGroup(model)">Удалить группу</ui-button>
   </div>
   <div class="body">
     <table>

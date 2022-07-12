@@ -53,9 +53,7 @@ export class GroupsComponent implements OnInit {
         map(([res, res2]: [any, IMyInvitation[]]) => {
           const myGroups: GroupModel[] = res.data.map((group: IGroup) => new GroupModel(group));
           const myInvitations: IMyInvitation[] = res2;
-          if (myGroups?.length) {
-            model.myGroups = myGroups;
-          }
+          model.myGroups = myGroups;
           model.myInvitations = myInvitations;
           model.state = EState.READY;
           return model;
@@ -84,7 +82,7 @@ export class GroupsComponent implements OnInit {
   private acceptInvitation(id: string): void {
     const data: any = {
       id,
-      user_id: this.user.id,
+      userId: this.user.id,
       status: EUserGroupStatus.MEMBER,
       name: this.user.name
     }
@@ -95,8 +93,8 @@ export class GroupsComponent implements OnInit {
     )
   }
 
-  private refuseInvitation(group_id: string): void {
-    this.dataBdService.deleteData(group_id, EBdTables.GROUPS_USERS).subscribe(
+  private refuseInvitation(groupId: string): void {
+    this.dataBdService.deleteData({ groupId }, EBdTables.GROUPS_USERS).subscribe(
       () => this.reloadGroups$.next(null)
     )
   }
@@ -120,13 +118,24 @@ export class GroupsComponent implements OnInit {
 
   private updateUserGroupsTable(id: string) {
     const data = {
-      group_id: id,
-      user_id: this.user.id,
+      groupId: id,
+      userId: this.user.id,
       author: this.user.name,
       email: this.user.email,
       status: EUserGroupStatus.AUTHOR,
       name: this.user.name
     }
     return this.dataBdService.createData(data, EBdTables.GROUPS_USERS)
+  }
+
+  public deleteGroup(groupId: string, model: GroupsModel): void {
+    model.state = EState.LOADING;
+    this.dataBdService.deleteData({ groupId }, EBdTables.GROUPS_USERS).pipe(
+      switchMap(() => this.dataBdService.deleteData({ id: groupId }, EBdTables.GROUPS))
+    ).subscribe(
+      () => {
+        this.reloadGroups$.next(null);
+      }
+    )
   }
 }

@@ -9,6 +9,8 @@
 }
 
 .header {
+  display: flex;
+  justify-content: space-between;
   margin-bottom: $base-gutter * 2;
 }
 

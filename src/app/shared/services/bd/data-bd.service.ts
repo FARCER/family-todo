@@ -56,8 +56,8 @@ export class DataBdService {
     return from(this.getSupabaseClientService.getSupabaseClient().from(table).insert(data))
   }
 
-  public deleteData(id: any, table: string): Observable<any> {
-    return from(this.getSupabaseClientService.getSupabaseClient().from(table).delete().match({ id }))
+  public deleteData(matchData: any, table: string): Observable<any> {
+    return from(this.getSupabaseClientService.getSupabaseClient().from(table).delete().match(matchData))
   }
 
   public getUserByEmail(email: string): Observable<any> {
