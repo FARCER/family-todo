@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { UserBdService } from '../../../shared/services/bd/user-bd.service';
+import { UserBdService } from '../../../../shared/services/bd/user-bd.service';
 import { BehaviorSubject, combineLatest, map, Observable, of, switchMap } from 'rxjs';
-import { Profile } from '../models/profile.model';
-import { IProfile } from '../interfaces/profile.interface';
-import { EState } from '../../../shared/enum/state.enum';
-import { LocalStorageService } from '../../../shared/services/local-storage.service';
-import { PersonalDataModel } from '../models/personal-data.model';
-import { ELocalStorageKeys } from '../../../shared/enum/local-storage-keys.enum';
-import { IUpdatePersonalData } from '../interfaces/update-personal-data.interface';
-import { EBdTables } from '../../../shared/enum/bd-tables.enum';
-import { DataBdService } from '../../../shared/services/bd/data-bd.service';
+import { Profile } from '../../models/profile.model';
+import { IProfile } from '../../interfaces/profile.interface';
+import { EState } from '../../../../shared/enum/state.enum';
+import { LocalStorageService } from '../../../../shared/services/local-storage.service';
+import { PersonalDataModel } from '../../models/personal-data.model';
+import { ELocalStorageKeys } from '../../../../shared/enum/local-storage-keys.enum';
+import { IUpdatePersonalData } from '../../interfaces/update-personal-data.interface';
+import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
+import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { ToastService } from 'ad-kit';
 
 @Component({

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { IProfile } from '../../../profile/interfaces/profile.interface';
@@ -9,7 +9,8 @@ import { ELocalStorageKeys } from '../../../../shared/enum/local-storage-keys.en
 @Component({
   selector: 'ad-create-group',
   templateUrl: './create-group.component.html',
-  styleUrls: ['./create-group.component.scss']
+  styleUrls: ['./create-group.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateGroupComponent implements OnInit {
 

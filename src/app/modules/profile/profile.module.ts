@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProfileComponent } from './profile/profile.component';
+import { ProfileComponent } from './components/profile/profile.component';
 import { AdKitModule } from 'ad-kit';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthDataFormComponent } from './components/auth-data-form/auth-data-form.component';

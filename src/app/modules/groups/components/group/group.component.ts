@@ -33,7 +33,9 @@ export class GroupComponent implements OnInit {
 
   private user: IProfile;
   private invitedUserEmail: string = '';
-  private resendUserData: IUserGroup;
+  private isResendInvite: boolean = false;
+  private isCancelInvite: boolean = false;
+  private currentUser: IUserGroup;
 
   constructor(
     private dataBdService: DataBdService,
@@ -52,7 +54,8 @@ export class GroupComponent implements OnInit {
   private initModel(): void {
     this.model$ = this.reloadGroup.pipe(
       switchMap((model: GroupModel) => !!this.invitedUserEmail ? this.inviteUserToGroup(model, this.invitedUserEmail) : of(model)),
-      switchMap((model: GroupModel) => !!this.resendUserData ? this.resendInvite(this.resendUserData, model) : of(model)),
+      switchMap((model: GroupModel) => !!this.isResendInvite ? this.resendInvite(model) : of(model)),
+      switchMap((model: GroupModel) => !!this.isCancelInvite ? this.cancelInvite(model) : of(model)),
       map((model: GroupModel) => {
         model.state = EState.READY;
         return model
@@ -145,25 +148,46 @@ export class GroupComponent implements OnInit {
   }
 
   public actionWithGroupUser(user: IUserGroup, model: GroupModel): void {
+    this.currentUser = user;
     if (user.status === EUserGroupStatus.REFUSE) {
-      this.resendUserData = user;
+      this.isResendInvite = true;
+      this.reloadGroup.next(model)
+    }
+    if (user.status === EUserGroupStatus.INVITED) {
+      this.isCancelInvite = true;
       this.reloadGroup.next(model)
     }
   }
 
-  private resendInvite(user: IUserGroup, model: GroupModel): Observable<GroupModel> {
+  private cancelInvite(model: GroupModel): Observable<GroupModel> {
+    model.state = EState.LOADING;
+    return this.dataBdService.deleteData({ id: this.currentUser.id }, EBdTables.GROUPS_USERS).pipe(
+      switchMap(() => this.updateGroupData(model.id)),
+      map((model: GroupModel) => {
+        this.toastService.show({
+          text: 'Приглашение успешно отменено',
+          type: 'success'
+        })
+        this.currentUser = null;
+        this.isCancelInvite = false;
+        return model;
+      }))
+  }
+
+  private resendInvite(model: GroupModel): Observable<GroupModel> {
     model.state = EState.LOADING;
     const data: any = {
       status: EUserGroupStatus.INVITED
     }
-    return this.dataBdService.updateData(data, EBdTables.GROUPS_USERS, { id: user.id }).pipe(
+    return this.dataBdService.updateData(data, EBdTables.GROUPS_USERS, { id: this.currentUser.id }).pipe(
       switchMap((res: any) => this.updateGroupData(model.id)),
       map((model: GroupModel) => {
         this.toastService.show({
           text: 'Приглашение отправлено повторно',
           type: 'success'
         })
-        this.resendUserData = null;
+        this.currentUser = null;
+        this.isResendInvite = false;
         return model;
       }),
     )
