@@ -85,7 +85,7 @@ export class GroupsComponent implements OnInit {
     }
     this.dataBdService.updateData(data, EBdTables.GROUPS_USERS, { id }).subscribe(
       (res: any) => {
-        console.log(res)
+        this.reloadGroups$.next(null);
       }
     )
   }

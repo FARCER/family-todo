@@ -33,7 +33,7 @@ export class GroupComponent implements OnInit {
 
   private user: IProfile;
   private invitedUserEmail: string = '';
-  private isResendInvite: boolean = false;
+  private isNeedUpdateUserStatus: boolean = false;
   private isCancelInvite: boolean = false;
   private currentUser: IUserGroup;
 
@@ -54,7 +54,7 @@ export class GroupComponent implements OnInit {
   private initModel(): void {
     this.model$ = this.reloadGroup.pipe(
       switchMap((model: GroupModel) => !!this.invitedUserEmail ? this.inviteUserToGroup(model, this.invitedUserEmail) : of(model)),
-      switchMap((model: GroupModel) => !!this.isResendInvite ? this.resendInvite(model) : of(model)),
+      switchMap((model: GroupModel) => !!this.isNeedUpdateUserStatus ? this.updateUserStatus(model) : of(model)),
       switchMap((model: GroupModel) => !!this.isCancelInvite ? this.cancelInvite(model) : of(model)),
       map((model: GroupModel) => {
         model.state = EState.READY;
@@ -149,8 +149,8 @@ export class GroupComponent implements OnInit {
 
   public actionWithGroupUser(user: IUserGroup, model: GroupModel): void {
     this.currentUser = user;
-    if (user.status === EUserGroupStatus.REFUSE) {
-      this.isResendInvite = true;
+    if ([EUserGroupStatus.REFUSE, EUserGroupStatus.MEMBER].includes(user.status)) {
+      this.isNeedUpdateUserStatus = true;
       this.reloadGroup.next(model)
     }
     if (user.status === EUserGroupStatus.INVITED) {
@@ -174,23 +174,45 @@ export class GroupComponent implements OnInit {
       }))
   }
 
-  private resendInvite(model: GroupModel): Observable<GroupModel> {
+  private updateUserStatus(model: GroupModel): Observable<GroupModel> {
     model.state = EState.LOADING;
     const data: any = {
-      status: EUserGroupStatus.INVITED
+      status: this.getNewUserStatus(this.currentUser.status)
     }
     return this.dataBdService.updateData(data, EBdTables.GROUPS_USERS, { id: this.currentUser.id }).pipe(
-      switchMap((res: any) => this.updateGroupData(model.id)),
+      switchMap(() => this.updateGroupData(model.id)),
       map((model: GroupModel) => {
         this.toastService.show({
-          text: 'Приглашение отправлено повторно',
+          text: this.getUserMessage(this.currentUser.status),
           type: 'success'
         })
         this.currentUser = null;
-        this.isResendInvite = false;
+        this.isNeedUpdateUserStatus = false;
         return model;
       }),
     )
+  }
+
+  private getUserMessage(currentStatus: EUserGroupStatus): string {
+    switch (currentStatus) {
+      case EUserGroupStatus.REFUSE:
+        return 'Приглашение отправлено повторно';
+      case EUserGroupStatus.MEMBER:
+        return 'Пользователь успешно исключен из группы'
+      default:
+        return ''
+    }
+  }
+
+  private getNewUserStatus(currentStatus: EUserGroupStatus): EUserGroupStatus {
+    switch (currentStatus) {
+      case EUserGroupStatus.REFUSE:
+        return EUserGroupStatus.INVITED;
+      case EUserGroupStatus.MEMBER:
+        return EUserGroupStatus.REMOVED
+      default:
+        return EUserGroupStatus.REMOVED
+    }
   }
 
 }
