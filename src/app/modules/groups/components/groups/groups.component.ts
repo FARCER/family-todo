@@ -44,16 +44,14 @@ export class GroupsComponent implements OnInit {
       switchMap((model: GroupsModel) => combineLatest([this.reloadGroups$]).pipe(
         switchMap(() => forkJoin([this.dataBdService.getData({
           table: EBdTables.GROUPS,
-          columns: 'id, name, users:id(email, status, name)',
+          columns: 'id, name, users:id(email, status, name, id, userId)',
           filterField: 'creatorId',
           filterType: EFilterType.ID
         }),
           this.getInvitedGroups()
         ])),
-        map(([res, res2]: [any, IMyInvitation[]]) => {
-          const myGroups: GroupModel[] = res.data.map((group: IGroup) => new GroupModel(group));
-          const myInvitations: IMyInvitation[] = res2;
-          model.myGroups = myGroups;
+        map(([res, myInvitations]: [any, IMyInvitation[]]) => {
+          model.myGroups = res.data.map((group: IGroup) => new GroupModel(group));
           model.myInvitations = myInvitations;
           model.state = EState.READY;
           return model;
@@ -82,7 +80,6 @@ export class GroupsComponent implements OnInit {
   private acceptInvitation(id: string): void {
     const data: any = {
       id,
-      userId: this.user.id,
       status: EUserGroupStatus.MEMBER,
       name: this.user.name
     }
@@ -93,8 +90,12 @@ export class GroupsComponent implements OnInit {
     )
   }
 
-  private refuseInvitation(groupId: string): void {
-    this.dataBdService.deleteData({ groupId }, EBdTables.GROUPS_USERS).subscribe(
+  private refuseInvitation(id: string): void {
+    const data: any = {
+      id,
+      status: EUserGroupStatus.REFUSE
+    }
+    this.dataBdService.updateData(data, EBdTables.GROUPS_USERS, { id }).subscribe(
       () => this.reloadGroups$.next(null)
     )
   }

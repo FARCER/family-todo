@@ -3,6 +3,9 @@
 :host {
   align-items: center;
   display: flex;
+  &:not(:last-child) {
+    margin-bottom: $base-gutter * 2;
+  }
 }
 
 .actions {

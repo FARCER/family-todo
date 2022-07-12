@@ -14,7 +14,7 @@ import { itselfEmailValidator } from '../../../../shared/directives/itself-email
 })
 export class InviteToGroupComponent implements OnInit {
 
-  @Output() public updateGroup: EventEmitter<string> = new EventEmitter<string>();
+  @Output() public inviteToGroup: EventEmitter<string> = new EventEmitter<string>();
 
   private isSubmitted: boolean = false;
   private user: IProfile;
@@ -45,7 +45,8 @@ export class InviteToGroupComponent implements OnInit {
     this.isSubmitted = true;
     if (this.form.valid) {
       const email: string = this.form.value.email;
-      this.updateGroup.emit(email);
+      this.isSubmitted = false;
+      this.inviteToGroup.emit(email);
     }
   }
 

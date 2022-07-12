@@ -1,17 +1,19 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { EUserGroupStatus } from '../enum/user-group-status.enum';
 
 @Pipe({
   name: 'userGroupStatus'
 })
 export class UserGroupStatusPipe implements PipeTransform {
 
-  transform(value: unknown, ...args: unknown[]): unknown {
-    console.log(value)
+  transform(value: EUserGroupStatus, ...args: unknown[]): unknown {
     switch (value) {
-      case 'author':
+      case EUserGroupStatus.AUTHOR:
         return 'Автор';
-      case 'invited':
+      case EUserGroupStatus.INVITED:
         return 'Приглашен';
+      case EUserGroupStatus.REFUSE:
+        return 'Отказался';
       default:
         return 'Участник'
     }

@@ -10,5 +10,5 @@ export class ButtonComponent {
 
   @Input() public type: string = 'submit';
   @Input() public disabled: boolean = false;
-  @Input() public mod: string = 'false';
+  @Input() public mod: string = '';
 }

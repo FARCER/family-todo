@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { GroupModel } from '../../models/group.model';
-import { BehaviorSubject, catchError, combineLatest, map, Observable, of, pluck, switchMap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, pluck, switchMap, throwError } from 'rxjs';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
 import { IGroup } from '../../interfaces/group.interface';
@@ -12,6 +12,8 @@ import { ELocalStorageKeys } from '../../../../shared/enum/local-storage-keys.en
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { InviteToGroupComponent } from '../invite-to-group/invite-to-group.component';
 import { ErrorCodes } from '../../../../shared/enum/error-codes.enum';
+import { EUserGroupStatus } from '../../../../shared/enum/user-group-status.enum';
+import { IUserGroup } from '../../interfaces/user-group.interface';
 
 @Component({
   selector: 'ad-group',
@@ -24,15 +26,14 @@ export class GroupComponent implements OnInit {
   @Input() public model: GroupModel;
   @Output() public deleteGroupEmit: EventEmitter<string> = new EventEmitter<string>();
 
-
   @ViewChild('adInviteToGroup') private inviteToGroupComponent: InviteToGroupComponent;
 
   public model$: Observable<GroupModel>;
-  private reloadGroup: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private reloadGroup: BehaviorSubject<GroupModel>;
 
-  private isNeedReload: boolean;
-  private inviteUserEmail: string;
   private user: IProfile;
+  private invitedUserEmail: string = '';
+  private resendUserData: IUserGroup;
 
   constructor(
     private dataBdService: DataBdService,
@@ -44,34 +45,48 @@ export class GroupComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.reloadGroup = new BehaviorSubject<GroupModel>(this.model);
     this.initModel();
   }
 
   private initModel(): void {
-    this.model$ = of(this.model).pipe(
-      switchMap((model: GroupModel) => combineLatest([this.reloadGroup]).pipe(
-        switchMap(() => this.isNeedReload ? this.inviteUserToGroup(model) : of(model)),
-        map((actualModel: GroupModel) => {
-          actualModel.state = EState.READY;
-          return actualModel
-        })
-      ))
+    this.model$ = this.reloadGroup.pipe(
+      switchMap((model: GroupModel) => !!this.invitedUserEmail ? this.inviteUserToGroup(model, this.invitedUserEmail) : of(model)),
+      switchMap((model: GroupModel) => !!this.resendUserData ? this.resendInvite(this.resendUserData, model) : of(model)),
+      map((model: GroupModel) => {
+        model.state = EState.READY;
+        return model
+      })
     );
   }
 
-  private inviteUserToGroup(model: GroupModel): Observable<GroupModel> {
+  public inviteUserToGroupWrapper(model: GroupModel, email: string): void {
+    this.invitedUserEmail = email;
+    this.reloadGroup.next(model);
+  }
+
+  public inviteUserToGroup(model: GroupModel, email: string): Observable<GroupModel> {
     model.state = EState.LOADING;
-    return this.getUserId().pipe(
+    this.inviteToGroupComponent.form.reset();
+    return this.getUserId(email).pipe(
       switchMap((userId: string) => {
         const data = {
           groupId: model.id,
-          email: this.inviteUserEmail,
+          email,
           author: this.user.name,
           userId,
         }
         return this.dataBdService.createData(data, EBdTables.GROUPS_USERS)
       }),
       switchMap(() => this.updateGroupData(model.id)),
+      map((model: GroupModel) => {
+        this.toastService.show({
+          text: 'Пользователь успешно приглашен в вашу группу',
+          type: 'success'
+        })
+        this.invitedUserEmail = '';
+        return model;
+      }),
       catchError(() => {
         return of(model);
       }),
@@ -82,35 +97,20 @@ export class GroupComponent implements OnInit {
     return this.dataBdService.getOneData(
       {
         table: EBdTables.GROUPS,
-        columns: 'id, name, users:id(email, status, name)',
+        columns: 'id, name, users:id(email, status, name, id, userId)',
         filterField: 'id',
         customFilterField: groupId,
       }
     ).pipe(
       pluck('data'),
-      map((res: IGroup) => {
-        this.isNeedReload = false;
-        this.inviteUserEmail = '';
-        this.inviteToGroupComponent.form.reset();
-        this.toastService.show({
-          text: 'Пользователь успешно приглашен в вашу группу',
-          type: 'success'
-        })
-        return new GroupModel(res);
-      })
+      map((res: IGroup) => new GroupModel(res))
     )
   }
 
-  public updateGroup(email: string): void {
-    this.isNeedReload = true
-    this.inviteUserEmail = email;
-    this.reloadGroup.next(null);
-  }
-
-  private getUserId(): Observable<string> {
-    return this.dataBdService.getUserByEmail(this.inviteUserEmail).pipe(
+  private getUserId(email: string): Observable<string> {
+    return this.dataBdService.getUserByEmail(email).pipe(
       switchMap((res: any) => {
-        if (res.error.code === ErrorCodes.NOT_FOUND_IN_DATABASE) {
+        if (res?.error?.code === ErrorCodes.NOT_FOUND_IN_DATABASE) {
           this.toastService.show({
             text: 'Пользователя с указанным e-mail не существует',
             type: 'info'
@@ -125,7 +125,48 @@ export class GroupComponent implements OnInit {
 
   public deleteGroup(model: GroupModel): void {
     this.deleteGroupEmit.emit(model.id)
+  }
 
+  public isNotGroupAuthor(status: EUserGroupStatus): boolean {
+    return status !== EUserGroupStatus.AUTHOR;
+  }
+
+  public getButtonTitle(status: EUserGroupStatus): string {
+    switch (status) {
+      case EUserGroupStatus.MEMBER:
+        return 'Удалить';
+      case EUserGroupStatus.REFUSE:
+        return 'Отправить повторно'
+      case EUserGroupStatus.INVITED:
+        return 'Отменить приглашение'
+      default:
+        return ''
+    }
+  }
+
+  public actionWithGroupUser(user: IUserGroup, model: GroupModel): void {
+    if (user.status === EUserGroupStatus.REFUSE) {
+      this.resendUserData = user;
+      this.reloadGroup.next(model)
+    }
+  }
+
+  private resendInvite(user: IUserGroup, model: GroupModel): Observable<GroupModel> {
+    model.state = EState.LOADING;
+    const data: any = {
+      status: EUserGroupStatus.INVITED
+    }
+    return this.dataBdService.updateData(data, EBdTables.GROUPS_USERS, { id: user.id }).pipe(
+      switchMap((res: any) => this.updateGroupData(model.id)),
+      map((model: GroupModel) => {
+        this.toastService.show({
+          text: 'Приглашение отправлено повторно',
+          type: 'success'
+        })
+        this.resendUserData = null;
+        return model;
+      }),
+    )
   }
 
 }

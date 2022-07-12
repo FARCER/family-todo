@@ -1,0 +1,15 @@
+@import "./projects/ad-kit/src/lib/assets/vars";
+
+:host {
+  display: block;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: $base-gutter * 2;
+    padding-bottom: $base-gutter * 2;
+  }
+}
+
+h2 {
+  margin-bottom: $base-gutter * 2;
+}
