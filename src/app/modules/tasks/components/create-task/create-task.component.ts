@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { UserBdService } from '../../../../shared/services/bd/user-bd.service';
 import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
@@ -16,7 +16,7 @@ export class CreateTaskComponent implements OnInit {
 
   @Input() public model: TasksModel;
   @Output() private reloadTasksList: EventEmitter<void> = new EventEmitter<void>();
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   private isSubmitted: boolean = false;
 
@@ -31,8 +31,8 @@ export class CreateTaskComponent implements OnInit {
   }
 
   private initForm(): void {
-    this.form = new FormGroup({
-      title: new FormControl('', [Validators.required])
+    this.form = new UntypedFormGroup({
+      title: new UntypedFormControl('', [Validators.required])
     })
   }
 

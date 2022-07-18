@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthBdService } from '../../../../shared/services/bd/auth-bd.service';
 import { ToastService } from 'ad-kit';
@@ -14,7 +14,7 @@ import { ApiError } from '@supabase/gotrue-js/src/lib/types';
 })
 export class LoginComponent implements OnInit {
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   private isSubmitted: boolean = false;
 
@@ -26,9 +26,9 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.form = new FormGroup({
-      login: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required])
+    this.form = new UntypedFormGroup({
+      login: new UntypedFormControl('', [Validators.required, Validators.email]),
+      password: new UntypedFormControl('', [Validators.required])
     })
   }
 

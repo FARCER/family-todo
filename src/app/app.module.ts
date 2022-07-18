@@ -10,6 +10,10 @@ import { IndexPageModule } from './modules/index-page/index-page.module';
 import { TasksModule } from './modules/tasks/tasks.module';
 import { CabinetModule } from './modules/cabinet/cabinet.module';
 import { GroupsModule } from './modules/groups/groups.module';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -24,7 +28,10 @@ import { GroupsModule } from './modules/groups/groups.module';
     IndexPageModule,
     TasksModule,
     CabinetModule,
-    GroupsModule
+    GroupsModule,
+    StoreModule.forRoot({}, {}),
+    EffectsModule.forRoot([]),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production })
   ],
   providers: [],
   bootstrap: [AppComponent]

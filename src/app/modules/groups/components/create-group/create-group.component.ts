@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { IProfile } from '../../../profile/interfaces/profile.interface';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
@@ -18,7 +18,7 @@ export class CreateGroupComponent implements OnInit {
   @Input() public model: GroupsModel;
 
   private isSubmitted: boolean = false;
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   private user: IProfile;
 
@@ -34,8 +34,8 @@ export class CreateGroupComponent implements OnInit {
   }
 
   private initForm(): void {
-    this.form = new FormGroup({
-      name: new FormControl('', [Validators.required])
+    this.form = new UntypedFormGroup({
+      name: new UntypedFormControl('', [Validators.required])
     })
   }
 

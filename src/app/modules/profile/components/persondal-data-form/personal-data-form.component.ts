@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Profile } from '../../models/profile.model';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { UserBdService } from '../../../../shared/services/bd/user-bd.service';
 import { PersonalDataModel } from '../../models/personal-data.model';
 import { IUpdatePersonalData } from '../../interfaces/update-personal-data.interface';
@@ -19,7 +19,7 @@ export class PersonalDataFormComponent implements OnInit {
 
 
   public profileModel$: Observable<Profile>;
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   constructor(
     private userBdService: UserBdService) {
@@ -30,11 +30,11 @@ export class PersonalDataFormComponent implements OnInit {
   }
 
   private initProfileForm(profile: PersonalDataModel): void {
-    this.form = new FormGroup({
-      name: new FormControl(profile?.name),
-      surName: new FormControl(profile?.surName),
-      patronymic: new FormControl(profile?.patronymic),
-      dateOfBirth: new FormControl(profile?.dateOfBirth),
+    this.form = new UntypedFormGroup({
+      name: new UntypedFormControl(profile?.name),
+      surName: new UntypedFormControl(profile?.surName),
+      patronymic: new UntypedFormControl(profile?.patronymic),
+      dateOfBirth: new UntypedFormControl(profile?.dateOfBirth),
     })
   }
 

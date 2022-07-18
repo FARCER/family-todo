@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { UserBdService } from '../../../../shared/services/bd/user-bd.service';
 import { AuthBdService } from '../../../../shared/services/bd/auth-bd.service';
 
@@ -10,7 +10,7 @@ import { AuthBdService } from '../../../../shared/services/bd/auth-bd.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuthDataFormComponent implements OnInit {
-  public authForm: FormGroup;
+  public authForm: UntypedFormGroup;
 
 
   constructor(
@@ -23,9 +23,9 @@ export class AuthDataFormComponent implements OnInit {
   }
 
   private initAuthForm(): void {
-    this.authForm = new FormGroup({
-      email: new FormControl(this.userBdService.user?.email),
-      password: new FormControl(''),
+    this.authForm = new UntypedFormGroup({
+      email: new UntypedFormControl(this.userBdService.user?.email),
+      password: new UntypedFormControl(''),
     })
   }
 
