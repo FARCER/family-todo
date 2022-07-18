@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { IProfile } from '../../../profile/interfaces/profile.interface';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { ELocalStorageKeys } from '../../../../shared/enum/local-storage-keys.enum';
 import { itselfEmailValidator } from '../../../../shared/directives/itself-email.directive';
+import { IUserGroup } from '../../interfaces/user-group.interface';
 
 @Component({
   selector: 'ad-invite-to-group',
@@ -14,6 +15,8 @@ import { itselfEmailValidator } from '../../../../shared/directives/itself-email
 })
 export class InviteToGroupComponent implements OnInit {
 
+
+  @Input() private users: IUserGroup[] = [];
   @Output() public inviteToGroup: EventEmitter<string> = new EventEmitter<string>();
 
   private isSubmitted: boolean = false;
@@ -60,6 +63,10 @@ export class InviteToGroupComponent implements OnInit {
 
   public validateItselfEmail(): boolean {
     return this.isSubmitted && this.form.controls['email'].errors?.['itselfEmail'];
+  }
+
+  public validateAlreadyMember(): boolean {
+    return this.isSubmitted && this.form.controls['email'].errors?.['alreadyMember'];
   }
 
 }
