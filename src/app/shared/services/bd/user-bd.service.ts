@@ -3,7 +3,6 @@ import { GetSupabaseClientService } from './get-supabase-client.service';
 import { EBdTables } from '../../enum/bd-tables.enum';
 import { from, map, Observable, pluck } from 'rxjs';
 import { IProfile } from '../../../modules/profile/interfaces/profile.interface';
-import { EFilterType } from '../../enum/filter-type.enum';
 import { ErrorCodes } from '../../enum/error-codes.enum';
 
 @Injectable({

@@ -8,3 +8,6 @@
 <ng-template #preloader>
   <ui-preloader></ui-preloader>
 </ng-template>
+
+
+<p *ngIf="profile$ | async as prof">{{prof | json}}</p>

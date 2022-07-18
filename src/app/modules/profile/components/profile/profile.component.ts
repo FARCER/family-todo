@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { UserBdService } from '../../../../shared/services/bd/user-bd.service';
-import { BehaviorSubject, combineLatest, map, Observable, of, switchMap } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, switchMap } from 'rxjs';
 import { Profile } from '../../models/profile.model';
 import { IProfile } from '../../interfaces/profile.interface';
 import { EState } from '../../../../shared/enum/state.enum';
@@ -11,6 +11,9 @@ import { IUpdatePersonalData } from '../../interfaces/update-personal-data.inter
 import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { ToastService } from 'ad-kit';
+import { Store } from '@ngrx/store';
+import { profileSelector } from '../../store/profile.selector';
+import { GetUser } from '../../store/profile.action';
 
 @Component({
   selector: 'ad-profile',
@@ -25,23 +28,25 @@ export class ProfileComponent {
 
   private isProfileUpdate: boolean = false;
 
+  public profile$: Observable<any>;
+
   constructor(
     private userBdService: UserBdService,
     private localStorageService: LocalStorageService,
     private dataBdService: DataBdService,
     private toastService: ToastService,
-    private changeDetectorRef: ChangeDetectorRef
+    private store: Store
   ) {
-    console.log(this.userBdService.session)
     this.initModel();
+    this.profile$ = this.store.select(profileSelector);
+    this.store.dispatch(new GetUser());
   }
 
   private initModel(): void {
     this.profileModel$ = of(new Profile()).pipe(
-      switchMap((model: Profile) => combineLatest([this.reloadProfile$]).pipe(
+      switchMap((model: Profile) => this.reloadProfile$.pipe(
         switchMap(() => this.userBdService.profile),
         map((profile: IProfile) => {
-          console.log(profile)
           this.localStorageService.setItem(ELocalStorageKeys.PROFILE, JSON.stringify(profile));
           model.personalData = new PersonalDataModel(profile)
           model.state = EState.READY;
@@ -65,8 +70,6 @@ export class ProfileComponent {
       (res: any) => {
         if (res.error) {
           console.log(res);
-          model.state = EState.READY;
-          this.changeDetectorRef.markForCheck();
           this.toastService.show({
             text: 'При обновлении данных произошла ошибка. Попробуйте снова',
             type: 'warning'

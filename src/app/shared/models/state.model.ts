@@ -21,3 +21,4 @@ export class StateModel {
     return this._state === EState.READY;
   }
 }
+

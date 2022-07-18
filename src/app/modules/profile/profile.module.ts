@@ -5,6 +5,10 @@ import { AdKitModule } from 'ad-kit';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthDataFormComponent } from './components/auth-data-form/auth-data-form.component';
 import { PersonalDataFormComponent } from './components/persondal-data-form/personal-data-form.component';
+import { StoreModule } from '@ngrx/store';
+import { profileReducer } from './store/profile.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { ProfileEffects } from './store/profile.effects';
 
 
 @NgModule({
@@ -16,7 +20,9 @@ import { PersonalDataFormComponent } from './components/persondal-data-form/pers
   imports: [
     CommonModule,
     AdKitModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    EffectsModule.forFeature([ProfileEffects]),
+    StoreModule.forFeature('profile', profileReducer)
   ]
 })
 export class ProfileModule {

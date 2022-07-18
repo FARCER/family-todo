@@ -1,5 +1,6 @@
 export enum EState {
-  LOADING,
-  ERROR,
-  READY
+  LOADING = 'LOADING',
+  ERROR = 'ERROR',
+  READY = 'READY',
+  EMPTY = 'EMPTY'
 }
