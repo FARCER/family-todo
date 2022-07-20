@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { UserBdService } from '../../../../shared/services/bd/user-bd.service';
 import { AuthBdService } from '../../../../shared/services/bd/auth-bd.service';
 
@@ -24,8 +24,8 @@ export class AuthDataFormComponent implements OnInit {
 
   private initAuthForm(): void {
     this.authForm = new UntypedFormGroup({
-      email: new UntypedFormControl(this.userBdService.user?.email),
-      password: new UntypedFormControl(''),
+      email: new FormControl<string>(this.userBdService.user?.email),
+      password: new FormControl<string>(''),
     })
   }
 

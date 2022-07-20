@@ -5,4 +5,5 @@ export interface IProfile {
   dateOfBirth: string;
   email?: string;
   id?: string;
+  updated_at?: Date;
 }

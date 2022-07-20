@@ -7,7 +7,6 @@ import { EState } from '../../../../shared/enum/state.enum';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { PersonalDataModel } from '../../models/personal-data.model';
 import { ELocalStorageKeys } from '../../../../shared/enum/local-storage-keys.enum';
-import { IUpdatePersonalData } from '../../interfaces/update-personal-data.interface';
 import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { ToastService } from 'ad-kit';
@@ -25,9 +24,6 @@ export class ProfileComponent {
   public reloadProfile$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   public profile$: Observable<any>;
   public loader$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
-  private isProfileUpdate: boolean = false;
-
 
   constructor(
     private userBdService: UserBdService,
@@ -48,21 +44,13 @@ export class ProfileComponent {
         const profile = new Profile();
         this.localStorageService.setItem(ELocalStorageKeys.PROFILE, JSON.stringify(profile));
         profile.personalData = new PersonalDataModel(personalData)
-        if (this.isProfileUpdate) {
-          this.isProfileUpdate = false;
-          this.toastService.show({
-            text: 'Обновление данных прошло успешно',
-            type: 'success'
-          })
-        }
         return { state: EState.READY, data: profile };
       }),
       startWith({ state: EState.LOADING })
     )
   }
 
-  public updatePersonalData(updateData: IUpdatePersonalData, model: Profile): void {
-    // this.isProfileUpdate = true;
+  public updatePersonalData(updateData: IProfile, model: Profile): void {
     this.loader$.next(true);
     this.dataBdService.upsertData(updateData, EBdTables.USERS).subscribe(
       (res: any) => {
@@ -73,6 +61,10 @@ export class ProfileComponent {
           })
           return;
         }
+        this.toastService.show({
+          text: 'Обновление данных прошло успешно',
+          type: 'success'
+        })
         const profile: IProfile = res.data;
         model.personalData = new PersonalDataModel(profile);
         this.loader$.next(false);

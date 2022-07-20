@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Profile } from '../../models/profile.model';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { UserBdService } from '../../../../shared/services/bd/user-bd.service';
 import { PersonalDataModel } from '../../models/personal-data.model';
-import { IUpdatePersonalData } from '../../interfaces/update-personal-data.interface';
+import { IProfile } from '../../interfaces/profile.interface';
 
 @Component({
   selector: 'ad-personal-data-form',
@@ -15,7 +15,7 @@ import { IUpdatePersonalData } from '../../interfaces/update-personal-data.inter
 export class PersonalDataFormComponent implements OnInit {
 
   @Input() public model: PersonalDataModel;
-  @Output() public updateData: EventEmitter<IUpdatePersonalData> = new EventEmitter<IUpdatePersonalData>();
+  @Output() public updateData: EventEmitter<IProfile> = new EventEmitter<IProfile>();
 
 
   public profileModel$: Observable<Profile>;
@@ -31,15 +31,15 @@ export class PersonalDataFormComponent implements OnInit {
 
   private initProfileForm(profile: PersonalDataModel): void {
     this.form = new UntypedFormGroup({
-      name: new UntypedFormControl(profile?.name),
-      surName: new UntypedFormControl(profile?.surName),
-      patronymic: new UntypedFormControl(profile?.patronymic),
-      dateOfBirth: new UntypedFormControl(profile?.dateOfBirth),
+      name: new FormControl<string>(profile?.name),
+      surName: new FormControl<string>(profile?.surName),
+      patronymic: new FormControl<string>(profile?.patronymic),
+      dateOfBirth: new FormControl<string>(profile?.dateOfBirth),
     })
   }
 
   public updateProfile(): void {
-    const updateData: IUpdatePersonalData = {
+    const updateData: IProfile = {
       name: this.form.value.name,
       surName: this.form.value.surName,
       patronymic: this.form.value.patronymic,
