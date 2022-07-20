@@ -42,7 +42,7 @@ export class ProfileComponent {
       switchMap(() => this.userBdService.profile),
       map((personalData: IProfile) => {
         const profile = new Profile();
-        this.localStorageService.setItem(ELocalStorageKeys.PROFILE, JSON.stringify(profile));
+        this.localStorageService.setItem(ELocalStorageKeys.PROFILE, JSON.stringify(personalData));
         profile.personalData = new PersonalDataModel(personalData)
         return { state: EState.READY, data: profile };
       }),
