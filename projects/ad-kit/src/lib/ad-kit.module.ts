@@ -4,6 +4,7 @@ import { ToastModule } from './modules/toast/toast.module';
 import { PreloaderModule } from './modules/preloader/preloader.module';
 import { ButtonModule } from './modules/button/button.module';
 import { CheckboxModule } from './modules/checkbox/checkbox.module';
+import { FormMessageModule } from './modules/form-message/form-message.module';
 
 
 @NgModule({
@@ -12,9 +13,10 @@ import { CheckboxModule } from './modules/checkbox/checkbox.module';
     InputModule,
     ToastModule.forRoot(),
     PreloaderModule,
-    ButtonModule
+    ButtonModule,
+    FormMessageModule
   ],
-  exports: [InputModule, ToastModule, PreloaderModule, ButtonModule, CheckboxModule]
+  exports: [InputModule, ToastModule, PreloaderModule, ButtonModule, CheckboxModule, FormMessageModule]
 })
 export class AdKitModule {
 }

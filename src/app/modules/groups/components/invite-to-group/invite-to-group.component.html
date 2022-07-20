@@ -1,10 +1,16 @@
 <h4>Пригласить в группу</h4>
 
 <form [formGroup]="form" (ngSubmit)="submit()">
-  <ui-input label="E-mail" [alreadyMember]="validateAlreadyMember()" [itselfEmail]="validateItselfEmail()"
-            [emailField]="validateEmailFieldType()"
-            [requiredError]="validateEmailField()"
-            formControlName="email"></ui-input>
+  <ui-input label="E-mail" formControlName="email">
+    <ui-form-message *ngIf="validateEmailField()"
+                     [message]="{type:'error',text:'Данное поле обязательно для заполнения'}"></ui-form-message>
+    <ui-form-message *ngIf="validateAlreadyMember()"
+                     [message]="{type:'error',text:'Данный участник уже в группе'}"></ui-form-message>
+    <ui-form-message *ngIf="validateItselfEmail()"
+                     [message]="{type:'error',text:'Вы не можете указывать свой e-mail'}"></ui-form-message>
+    <ui-form-message *ngIf="validateEmailFieldType()"
+                     [message]="{type:'error',text:'E-mail указан некорректно'}"></ui-form-message>
+  </ui-input>
   <ui-button>Пригласить</ui-button>
 </form>
 

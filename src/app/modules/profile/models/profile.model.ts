@@ -1,13 +1,11 @@
-import { StateModel } from '../../../shared/models/state.model';
 import { PersonalDataModel } from './personal-data.model';
 
-export class Profile extends StateModel {
+export class Profile  {
 
   private _email: string;
   private _personalData: PersonalDataModel;
 
   constructor() {
-    super();
   }
 
   public get email(): string {

@@ -1,9 +1,16 @@
 <h1>Регистрация</h1>
 
 <form (ngSubmit)="submit()" [formGroup]="form" class="form">
-  <ui-input [requiredError]="checkRequiredFields('login')"
-            [emailField]="validateLoginFieldType()" [formControlName]="'login'" [label]="'Логин'"></ui-input>
-  <ui-input [requiredError]="checkRequiredFields('password')" [formControlName]="'password'" [label]="'Пароль'"
-            [type]="'password'"></ui-input>
+  <ui-input [formControlName]="'login'" [label]="'E-mail'">
+    <ui-form-message *ngIf="checkRequiredFields('login')"
+                     [message]="{type:'error',text:'Данное поле обязательно для заполнения'}"></ui-form-message>
+    <ui-form-message *ngIf="validateLoginFieldType()"
+                     [message]="{type:'error',text:'E-mail указан некорректно'}"></ui-form-message>
+  </ui-input>
+  <ui-input [formControlName]="'password'" [label]="'Пароль'"
+            [type]="'password'">
+    <ui-form-message *ngIf="checkRequiredFields('password')"
+                     [message]="{type:'error',text:'Данное поле обязательно для заполнения'}"></ui-form-message>
+  </ui-input>
   <ui-button>Зарегистрироваться</ui-button>
 </form>

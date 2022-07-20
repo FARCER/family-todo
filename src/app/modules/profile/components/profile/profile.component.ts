@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { UserBdService } from '../../../../shared/services/bd/user-bd.service';
-import { BehaviorSubject, map, Observable, of, switchMap } from 'rxjs';
+import { BehaviorSubject, map, Observable, startWith, switchMap } from 'rxjs';
 import { Profile } from '../../models/profile.model';
 import { IProfile } from '../../interfaces/profile.interface';
 import { EState } from '../../../../shared/enum/state.enum';
@@ -12,8 +12,7 @@ import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { ToastService } from 'ad-kit';
 import { Store } from '@ngrx/store';
-import { profileSelector } from '../../store/profile.selector';
-import { GetUser } from '../../store/profile.action';
+import { IModelWithState } from '../../../../shared/interfaces/model-with-state.interface';
 
 @Component({
   selector: 'ad-profile',
@@ -22,61 +21,61 @@ import { GetUser } from '../../store/profile.action';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProfileComponent {
-
+  public model$: Observable<IModelWithState<Profile>>
   public reloadProfile$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  public profileModel$: Observable<Profile>;
+  public profile$: Observable<any>;
+  public loader$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private isProfileUpdate: boolean = false;
 
-  public profile$: Observable<any>;
 
   constructor(
     private userBdService: UserBdService,
     private localStorageService: LocalStorageService,
     private dataBdService: DataBdService,
     private toastService: ToastService,
-    private store: Store
+    private store: Store,
   ) {
     this.initModel();
-    this.profile$ = this.store.select(profileSelector);
-    this.store.dispatch(new GetUser());
+    // this.profile$ = this.store.select(profileSelector);
+    // this.store.dispatch(new GetUser());
   }
 
   private initModel(): void {
-    this.profileModel$ = of(new Profile()).pipe(
-      switchMap((model: Profile) => this.reloadProfile$.pipe(
-        switchMap(() => this.userBdService.profile),
-        map((profile: IProfile) => {
-          this.localStorageService.setItem(ELocalStorageKeys.PROFILE, JSON.stringify(profile));
-          model.personalData = new PersonalDataModel(profile)
-          model.state = EState.READY;
-          if (this.isProfileUpdate) {
-            this.isProfileUpdate = false;
-            this.toastService.show({
-              text: 'Обновление данных прошло успешно',
-              type: 'success'
-            })
-          }
-          return model;
-        }),
-      ))
+    this.model$ = this.reloadProfile$.pipe(
+      switchMap(() => this.userBdService.profile),
+      map((personalData: IProfile) => {
+        const profile = new Profile();
+        this.localStorageService.setItem(ELocalStorageKeys.PROFILE, JSON.stringify(profile));
+        profile.personalData = new PersonalDataModel(personalData)
+        if (this.isProfileUpdate) {
+          this.isProfileUpdate = false;
+          this.toastService.show({
+            text: 'Обновление данных прошло успешно',
+            type: 'success'
+          })
+        }
+        return { state: EState.READY, data: profile };
+      }),
+      startWith({ state: EState.LOADING })
     )
   }
 
   public updatePersonalData(updateData: IUpdatePersonalData, model: Profile): void {
-    model.state = EState.LOADING;
-    this.isProfileUpdate = true;
+    // this.isProfileUpdate = true;
+    this.loader$.next(true);
     this.dataBdService.upsertData(updateData, EBdTables.USERS).subscribe(
       (res: any) => {
         if (res.error) {
-          console.log(res);
           this.toastService.show({
             text: 'При обновлении данных произошла ошибка. Попробуйте снова',
             type: 'warning'
           })
           return;
         }
-        this.reloadProfile$.next(null)
+        const profile: IProfile = res.data;
+        model.personalData = new PersonalDataModel(profile);
+        this.loader$.next(false);
       }
     )
   }

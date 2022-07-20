@@ -1,13 +1,11 @@
-<ng-container *ngIf="profileModel$ | async as model; else preloader">
-  <ng-container *ngIf="model.isReady(); else preloader">
-    <ad-personal-data-form (updateData)="updatePersonalData($event, model)"
-                           [model]="model.personalData"></ad-personal-data-form>
+<ng-container *ngIf="model$ | async as model">
+  <ng-container *ngIf="model.state === 'READY'">
+    <ad-personal-data-form (updateData)="updatePersonalData($event, model.data)"
+                           [model]="model.data.personalData"></ad-personal-data-form>
     <ad-auth-data-form></ad-auth-data-form>
   </ng-container>
+  <ui-preloader *ngIf="model.state === 'LOADING'"></ui-preloader>
+  <ui-preloader *ngIf="loader$ | async"></ui-preloader>
 </ng-container>
-<ng-template #preloader>
-  <ui-preloader></ui-preloader>
-</ng-template>
 
-
-<p *ngIf="profile$ | async as prof">{{prof | json}}</p>
+<!--<p *ngIf="profile$ | async as prof">{{prof | json}}</p>-->

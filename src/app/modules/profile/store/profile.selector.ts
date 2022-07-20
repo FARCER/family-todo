@@ -3,7 +3,6 @@ import { IProfileState } from './profile.state';
 
 export const featureSelector = createFeatureSelector<IProfileState>('profile')
 
-
 export const profileSelector = createSelector(
   featureSelector, state => state
 )

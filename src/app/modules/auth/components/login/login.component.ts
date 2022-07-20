@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthBdService } from '../../../../shared/services/bd/auth-bd.service';
 import { ToastService } from 'ad-kit';
@@ -27,8 +27,8 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = new UntypedFormGroup({
-      login: new UntypedFormControl('', [Validators.required, Validators.email]),
-      password: new UntypedFormControl('', [Validators.required])
+      login: new FormControl<string>('', [Validators.required, Validators.email]),
+      password: new FormControl<string>('', [Validators.required])
     })
   }
 

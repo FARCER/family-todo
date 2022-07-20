@@ -1,5 +1,8 @@
 <h2>Создайте группу</h2>
 <form [formGroup]="form" (ngSubmit)="submit()">
-  <ui-input [requiredError]="validateNameField()" label="Название группы" formControlName="name"></ui-input>
+  <ui-input label="Название группы" formControlName="name">
+    <ui-form-message *ngIf="validateNameField()"
+                     [message]="{type:'error',text:'Данное поле обязательно для заполнения'}"></ui-form-message>
+  </ui-input>
   <ui-button>Создать</ui-button>
 </form>

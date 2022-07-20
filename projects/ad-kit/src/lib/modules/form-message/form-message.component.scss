@@ -1,0 +1,10 @@
+@import "../../assets/vars";
+
+:host {
+  display: block;
+  margin-top: $base-gutter;
+
+  .error {
+    color: red;
+  }
+}
