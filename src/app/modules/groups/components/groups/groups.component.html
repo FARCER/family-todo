@@ -1,18 +1,21 @@
-<ng-container *ngIf="myGroups$ | async as model; else preloader">
-  <ng-container *ngIf="model.isReady(); else preloader">
-    <ad-create-group [model]="model" (createGroupEmit)="createGroup($event, model)"></ad-create-group>
-    <ng-container *ngIf="model.myInvitations?.length">
-      <ad-my-invitation (invitationResultEmit)="invitationResultEmit($event, model)"
-                        *ngFor="let invitation of model.myInvitations" [data]="invitation">
+<ng-container *ngIf="myGroups$ | async as model">
+  <ng-container *ngIf="model.state === 'READY'">
+
+    <ad-create-group [model]="model.data" (createGroupEmit)="createGroup($event)"></ad-create-group>
+
+    <ng-container *ngIf="model.data.myInvitations?.length">
+      <ad-my-invitation (invitationResultEmit)="invitationResultEmit($event, model.data)"
+                        *ngFor="let invitation of model.data.myInvitations" [data]="invitation">
       </ad-my-invitation>
     </ng-container>
-    <div class="groups" *ngIf="model.myGroups?.length">
-      <ad-group *ngFor="let group of model.myGroups" [model]="group"
-                (deleteGroupEmit)="deleteGroup($event, model)"></ad-group>
-    </div>
-  </ng-container>
-</ng-container>
 
-<ng-template #preloader>
-  <ui-preloader></ui-preloader>
-</ng-template>
+    <div class="groups" *ngIf="model.data.myGroups?.length">
+      <ad-group *ngFor="let group of model.data.myGroups" [model]="group"
+                (deleteGroupEmit)="deleteGroup($event)"></ad-group>
+    </div>
+
+  </ng-container>
+  <ui-preloader *ngIf="model.state === 'LOADING'"></ui-preloader>
+  <ui-preloader *ngIf="loader$ | async"></ui-preloader>
+
+</ng-container>

@@ -22,7 +22,6 @@ import { IModelWithState } from '../../../../shared/interfaces/model-with-state.
 export class ProfileComponent {
   public model$: Observable<IModelWithState<Profile>>
   public reloadProfile$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  public profile$: Observable<any>;
   public loader$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(

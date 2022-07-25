@@ -1,19 +1,16 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { IProfile } from '../../../profile/interfaces/profile.interface';
-import { BehaviorSubject, combineLatest, forkJoin, map, Observable, of, pluck, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, startWith, switchMap, tap } from 'rxjs';
 import { GroupsModel } from '../../models/groups.model';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { EState } from '../../../../shared/enum/state.enum';
-import { EFilterType } from '../../../../shared/enum/filter-type.enum';
 import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
-import { GroupModel } from '../../models/group.model';
-import { IGroup } from '../../interfaces/group.interface';
 import { EUserGroupStatus } from '../../../../shared/enum/user-group-status.enum';
-import { IUserGroupStatus } from '../../interfaces/user-group-status.interface';
-import { IMyInvitation } from '../../interfaces/my-invitation.interface';
 import { ELocalStorageKeys } from '../../../../shared/enum/local-storage-keys.enum';
 import { IInvitationAnswer } from '../../interfaces/invitation-answer.interface';
+import { IModelWithState } from '../../../../shared/interfaces/model-with-state.interface';
+import { GroupsService } from '../../services/groups.service';
 
 @Component({
   selector: 'ad-groups',
@@ -23,14 +20,17 @@ import { IInvitationAnswer } from '../../interfaces/invitation-answer.interface'
 })
 export class GroupsComponent implements OnInit {
 
-  public myGroups$: Observable<GroupsModel>;
+  public myGroups$: Observable<IModelWithState<GroupsModel>>;
+  public reloadGroups$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  public loader$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private user: IProfile;
-  public reloadGroups$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+
 
   constructor(
     private localStorageService: LocalStorageService,
     private dataBdService: DataBdService,
+    private groupsService: GroupsService
   ) {
     this.user = JSON.parse(this.localStorageService.getItem(ELocalStorageKeys.PROFILE));
   }
@@ -40,35 +40,12 @@ export class GroupsComponent implements OnInit {
   }
 
   private initModel(): void {
-    this.myGroups$ = of(new GroupsModel()).pipe(
-      switchMap((model: GroupsModel) => combineLatest([this.reloadGroups$]).pipe(
-        switchMap(() => forkJoin([this.dataBdService.getData({
-          table: EBdTables.GROUPS,
-          columns: 'id, name, users:id(email, status, name, id, userId)',
-          filterField: 'creatorId',
-          filterType: EFilterType.ID
-        }),
-          this.getInvitedGroups()
-        ])),
-        map(([res, myInvitations]: [any, IMyInvitation[]]) => {
-          model.myGroups = res.data.map((group: IGroup) => new GroupModel(group));
-          model.myInvitations = myInvitations;
-          model.state = EState.READY;
-          return model;
-        })
-      ))
-    )
-  }
-
-  private getInvitedGroups(): Observable<any> {
-    return this.dataBdService.getData({
-      table: EBdTables.GROUPS_USERS,
-      columns: 'id, author, status',
-      filterType: EFilterType.EMAIL,
-      filterField: 'email'
-    }).pipe(
-      pluck('data'),
-      map((res: IUserGroupStatus[]) => res.filter((t: IUserGroupStatus) => t.status === EUserGroupStatus.INVITED))
+    this.myGroups$ = this.reloadGroups$.pipe(
+      switchMap(() => this.groupsService.getGroupsModel()),
+      tap(() => {
+        this.loader$.next(false);
+      }),
+      startWith({ state: EState.LOADING })
     )
   }
 
@@ -84,7 +61,7 @@ export class GroupsComponent implements OnInit {
       name: this.user.name
     }
     this.dataBdService.updateData(data, EBdTables.GROUPS_USERS, { id }).subscribe(
-      (res: any) => {
+      () => {
         this.reloadGroups$.next(null);
       }
     )
@@ -100,40 +77,18 @@ export class GroupsComponent implements OnInit {
     )
   }
 
-  public createGroup(groupName: string, model: GroupsModel) {
-    const data = {
-      creatorName: this.user.name,
-      creatorId: this.user.id,
-      name: groupName,
-    }
-    model.state = EState.LOADING;
-
-    this.dataBdService.upsertData(data, EBdTables.GROUPS).pipe(
-      switchMap((res: any) => this.updateUserGroupsTable(res.data.id))
-    ).subscribe(
+  public createGroup(groupName: string) {
+    this.loader$.next(true);
+    this.groupsService.createGroup(groupName).subscribe(
       () => {
         this.reloadGroups$.next(null)
       }
     )
   }
 
-  private updateUserGroupsTable(id: string) {
-    const data = {
-      groupId: id,
-      userId: this.user.id,
-      author: this.user.name,
-      email: this.user.email,
-      status: EUserGroupStatus.AUTHOR,
-      name: this.user.name
-    }
-    return this.dataBdService.createData(data, EBdTables.GROUPS_USERS)
-  }
-
-  public deleteGroup(groupId: string, model: GroupsModel): void {
-    model.state = EState.LOADING;
-    this.dataBdService.deleteData({ groupId }, EBdTables.GROUPS_USERS).pipe(
-      switchMap(() => this.dataBdService.deleteData({ id: groupId }, EBdTables.GROUPS))
-    ).subscribe(
+  public deleteGroup(groupId: string): void {
+    this.loader$.next(true)
+    this.groupsService.deleteGroup(groupId).subscribe(
       () => {
         this.reloadGroups$.next(null);
       }
