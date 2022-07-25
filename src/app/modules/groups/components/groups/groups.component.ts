@@ -11,6 +11,8 @@ import { ELocalStorageKeys } from '../../../../shared/enum/local-storage-keys.en
 import { IInvitationAnswer } from '../../interfaces/invitation-answer.interface';
 import { IModelWithState } from '../../../../shared/interfaces/model-with-state.interface';
 import { GroupsService } from '../../services/groups.service';
+import { GroupService } from '../../services/group.service';
+import { IInviteUserEmit } from '../../interfaces/invite-user-emit.interface';
 
 @Component({
   selector: 'ad-groups',
@@ -30,7 +32,8 @@ export class GroupsComponent implements OnInit {
   constructor(
     private localStorageService: LocalStorageService,
     private dataBdService: DataBdService,
-    private groupsService: GroupsService
+    private groupsService: GroupsService,
+    private groupService: GroupService
   ) {
     this.user = JSON.parse(this.localStorageService.getItem(ELocalStorageKeys.PROFILE));
   }
@@ -89,6 +92,15 @@ export class GroupsComponent implements OnInit {
   public deleteGroup(groupId: string): void {
     this.loader$.next(true)
     this.groupsService.deleteGroup(groupId).subscribe(
+      () => {
+        this.reloadGroups$.next(null);
+      }
+    )
+  }
+
+  public inviteUser(data: IInviteUserEmit) {
+    this.loader$.next(true);
+    this.groupService.inviteUserToGroup(data).subscribe(
       () => {
         this.reloadGroups$.next(null);
       }

@@ -14,6 +14,7 @@ import { InviteToGroupComponent } from '../invite-to-group/invite-to-group.compo
 import { ErrorCodes } from '../../../../shared/enum/error-codes.enum';
 import { EUserGroupStatus } from '../../../../shared/enum/user-group-status.enum';
 import { IUserGroup } from '../../interfaces/user-group.interface';
+import { IInviteUserEmit } from '../../interfaces/invite-user-emit.interface';
 
 @Component({
   selector: 'ad-group',
@@ -25,6 +26,7 @@ export class GroupComponent implements OnInit {
 
   @Input() public model: GroupModel;
   @Output() public deleteGroupEmit: EventEmitter<string> = new EventEmitter<string>();
+  @Output() public inviteUser: EventEmitter<IInviteUserEmit> = new EventEmitter<IInviteUserEmit>();
 
   @ViewChild('adInviteToGroup') private inviteToGroupComponent: InviteToGroupComponent;
 
@@ -32,7 +34,6 @@ export class GroupComponent implements OnInit {
   private reloadGroup: BehaviorSubject<GroupModel>;
 
   private user: IProfile;
-  private invitedUserEmail: string = '';
   private isNeedUpdateUserStatus: boolean = false;
   private isCancelInvite: boolean = false;
   private currentUser: IUserGroup;
@@ -53,47 +54,13 @@ export class GroupComponent implements OnInit {
 
   private initModel(): void {
     this.model$ = this.reloadGroup.pipe(
-      switchMap((model: GroupModel) => !!this.invitedUserEmail ? this.inviteUserToGroup(model, this.invitedUserEmail) : of(model)),
       switchMap((model: GroupModel) => !!this.isNeedUpdateUserStatus ? this.updateUserStatus(model) : of(model)),
       switchMap((model: GroupModel) => !!this.isCancelInvite ? this.cancelInvite(model) : of(model)),
-      map((model: GroupModel) => {
-        model.state = EState.READY;
-        return model
-      })
     );
   }
 
-  public inviteUserToGroupWrapper(model: GroupModel, email: string): void {
-    this.invitedUserEmail = email;
-    this.reloadGroup.next(model);
-  }
-
-  public inviteUserToGroup(model: GroupModel, email: string): Observable<GroupModel> {
-    model.state = EState.LOADING;
-    this.inviteToGroupComponent.form.reset();
-    return this.getUserId(email).pipe(
-      switchMap((userId: string) => {
-        const data = {
-          groupId: model.id,
-          email,
-          author: this.user.name,
-          userId,
-        }
-        return this.dataBdService.createData(data, EBdTables.GROUPS_USERS)
-      }),
-      switchMap(() => this.updateGroupData(model.id)),
-      map((model: GroupModel) => {
-        this.toastService.show({
-          text: 'Пользователь успешно приглашен в вашу группу',
-          type: 'success'
-        })
-        this.invitedUserEmail = '';
-        return model;
-      }),
-      catchError(() => {
-        return of(model);
-      }),
-    )
+  public inviteToGroup(email: string): void {
+    this.inviteUser.emit({ email, groupId: this.model.id });
   }
 
   private updateGroupData(groupId: string): Observable<GroupModel> {
@@ -107,22 +74,6 @@ export class GroupComponent implements OnInit {
     ).pipe(
       pluck('data'),
       map((res: IGroup) => new GroupModel(res))
-    )
-  }
-
-  private getUserId(email: string): Observable<string> {
-    return this.dataBdService.getUserByEmail(email).pipe(
-      switchMap((res: any) => {
-        if (res?.error?.code === ErrorCodes.NOT_FOUND_IN_DATABASE) {
-          this.toastService.show({
-            text: 'Пользователя с указанным e-mail не существует',
-            type: 'info'
-          })
-          return throwError(() => new Error('123'));
-        }
-        const user = res.data;
-        return of(user.id || '');
-      })
     )
   }
 
@@ -160,7 +111,6 @@ export class GroupComponent implements OnInit {
   }
 
   private cancelInvite(model: GroupModel): Observable<GroupModel> {
-    model.state = EState.LOADING;
     return this.dataBdService.deleteData({ id: this.currentUser.id }, EBdTables.GROUPS_USERS).pipe(
       switchMap(() => this.updateGroupData(model.id)),
       map((model: GroupModel) => {
@@ -175,7 +125,6 @@ export class GroupComponent implements OnInit {
   }
 
   private updateUserStatus(model: GroupModel): Observable<GroupModel> {
-    model.state = EState.LOADING;
     const data: any = {
       status: this.getNewUserStatus(this.currentUser.status)
     }

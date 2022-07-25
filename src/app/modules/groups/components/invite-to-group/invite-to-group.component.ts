@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, UntypedFormGroup, Validators } from '@angular/forms';
 import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
 import { IProfile } from '../../../profile/interfaces/profile.interface';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
@@ -22,7 +22,9 @@ export class InviteToGroupComponent implements OnInit {
   private isSubmitted: boolean = false;
   private user: IProfile;
 
-  public form: UntypedFormGroup;
+  public form: FormGroup<{
+    email: FormControl<string>
+  }>;
 
   constructor(
     private dataBdService: DataBdService,
@@ -36,8 +38,8 @@ export class InviteToGroupComponent implements OnInit {
   }
 
   private initForm(): void {
-    this.form = new UntypedFormGroup({
-      email: new UntypedFormControl('', [
+    this.form = new FormGroup({
+      email: new FormControl<string>('', [
         Validators.required,
         Validators.email,
         itselfEmailValidator(this.user.email || '')])
@@ -50,6 +52,7 @@ export class InviteToGroupComponent implements OnInit {
       const email: string = this.form.value.email;
       this.isSubmitted = false;
       this.inviteToGroup.emit(email);
+      this.form.reset();
     }
   }
 

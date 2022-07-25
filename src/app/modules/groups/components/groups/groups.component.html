@@ -11,6 +11,7 @@
 
     <div class="groups" *ngIf="model.data.myGroups?.length">
       <ad-group *ngFor="let group of model.data.myGroups" [model]="group"
+                (inviteUser) = inviteUser($event);
                 (deleteGroupEmit)="deleteGroup($event)"></ad-group>
     </div>
 

@@ -24,7 +24,6 @@ export class DataBdService {
       .eq(request.filterField, this.getFilterField(request))
   }
 
-
   private getOneDataAsPromise(request: IGetDataRequest) {
     return this.getDataAsPromise(request).single()
   }

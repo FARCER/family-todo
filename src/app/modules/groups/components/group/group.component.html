@@ -27,7 +27,6 @@
     </table>
   </div>
   <div class="footer">
-    <ad-invite-to-group #adInviteToGroup (inviteToGroup)="inviteUserToGroupWrapper(model, $event)"></ad-invite-to-group>
+    <ad-invite-to-group #adInviteToGroup (inviteToGroup)="inviteToGroup($event)"></ad-invite-to-group>
   </div>
-  <ui-preloader *ngIf="model.isLoading()"></ui-preloader>
 </ng-container>
