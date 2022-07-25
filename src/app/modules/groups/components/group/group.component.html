@@ -1,32 +1,30 @@
-<ng-container *ngIf="model$ | async as model">
-  <div class="header">
-    <h2>{{model.name}}</h2>
-    <ui-button (click)="deleteGroup(model)">Удалить группу</ui-button>
-  </div>
-  <div class="body">
-    <table>
-      <thead>
-      <tr>
-        <th>E-mail</th>
-        <th>Статус</th>
-        <th>Имя</th>
-        <th></th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let user of model.users">
-        <td>{{user.email}}</td>
-        <td>{{user.status | userGroupStatus}}</td>
-        <td>{{user.name}}</td>
-        <td>
-          <ui-button *ngIf="isNotGroupAuthor(user.status)"
-                     (click)="actionWithGroupUser(user, model)">{{getButtonTitle(user.status)}}</ui-button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="footer">
-    <ad-invite-to-group #adInviteToGroup (inviteToGroup)="inviteToGroup($event)"></ad-invite-to-group>
-  </div>
-</ng-container>
+<div class="header">
+  <h2>{{model.name}}</h2>
+  <ui-button (click)="deleteGroup(model)">Удалить группу</ui-button>
+</div>
+<div class="body">
+  <table>
+    <thead>
+    <tr>
+      <th>E-mail</th>
+      <th>Статус</th>
+      <th>Имя</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let user of model.users">
+      <td>{{user.email}}</td>
+      <td>{{user.status | userGroupStatus}}</td>
+      <td>{{user.name}}</td>
+      <td>
+        <ui-button *ngIf="isNotGroupAuthor(user.status)"
+                   (click)="actionWithUser(user)">{{getButtonTitle(user.status)}}</ui-button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div class="footer">
+  <ad-invite-to-group (inviteToGroup)="inviteToGroup($event)"></ad-invite-to-group>
+</div>

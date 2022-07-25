@@ -13,6 +13,7 @@ import { IModelWithState } from '../../../../shared/interfaces/model-with-state.
 import { GroupsService } from '../../services/groups.service';
 import { GroupService } from '../../services/group.service';
 import { IInviteUserEmit } from '../../interfaces/invite-user-emit.interface';
+import { IActionWithUserGroupEmit } from '../../interfaces/action-with-user-group-emit.interface';
 
 @Component({
   selector: 'ad-groups',
@@ -98,7 +99,7 @@ export class GroupsComponent implements OnInit {
     )
   }
 
-  public inviteUser(data: IInviteUserEmit) {
+  public inviteUser(data: IInviteUserEmit): void {
     this.loader$.next(true);
     this.groupService.inviteUserToGroup(data).subscribe(
       () => {
@@ -106,4 +107,24 @@ export class GroupsComponent implements OnInit {
       }
     )
   }
+
+  public actionWithGroupUser({ user, groupId }: IActionWithUserGroupEmit): void {
+    this.loader$.next(true);
+    if ([EUserGroupStatus.REFUSE, EUserGroupStatus.MEMBER].includes(user.status)) {
+      this.groupService.updateUserStatus(user, groupId).subscribe(
+        () => {
+          this.reloadGroups$.next(null)
+        }
+      )
+    }
+    if (user.status === EUserGroupStatus.INVITED) {
+      this.groupService.cancelInvite(user, groupId).subscribe(
+        () => {
+          this.reloadGroups$.next(null)
+        }
+      )
+    }
+  }
+
+
 }

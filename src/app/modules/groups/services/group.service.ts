@@ -9,6 +9,8 @@ import { IProfile } from '../../profile/interfaces/profile.interface';
 import { ELocalStorageKeys } from '../../../shared/enum/local-storage-keys.enum';
 import { LocalStorageService } from '../../../shared/services/local-storage.service';
 import { IInviteUserEmit } from '../interfaces/invite-user-emit.interface';
+import { IUserGroup } from '../interfaces/user-group.interface';
+import { EUserGroupStatus } from '../../../shared/enum/user-group-status.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -75,5 +77,56 @@ export class GroupService {
         return of(user.id || '');
       })
     )
+  }
+
+  public cancelInvite(user: IUserGroup, groupId: string) {
+    return this.dataBdService.deleteData({ id: user.id }, EBdTables.GROUPS_USERS).pipe(
+      switchMap(() => this.updateGroupData(groupId)),
+      map((model: GroupModel) => {
+        this.toastService.show({
+          text: 'Приглашение успешно отменено',
+          type: 'success'
+        })
+        return model;
+      }))
+  }
+
+  public updateUserStatus(user: IUserGroup, groupId: string): Observable<GroupModel> {
+    const data: any = {
+      status: this.getNewUserStatus(user.status)
+    }
+    return this.dataBdService.updateData(data, EBdTables.GROUPS_USERS, { id: user.id }).pipe(
+      switchMap(() => this.updateGroupData(groupId)),
+      map((model: GroupModel) => {
+        this.toastService.show({
+          text: this.getUserMessage(user.status),
+          type: 'success'
+        })
+        return model;
+      }),
+    )
+  }
+
+
+  private getUserMessage(currentStatus: EUserGroupStatus): string {
+    switch (currentStatus) {
+      case EUserGroupStatus.REFUSE:
+        return 'Приглашение отправлено повторно';
+      case EUserGroupStatus.MEMBER:
+        return 'Пользователь успешно исключен из группы'
+      default:
+        return ''
+    }
+  }
+
+  private getNewUserStatus(currentStatus: EUserGroupStatus): EUserGroupStatus {
+    switch (currentStatus) {
+      case EUserGroupStatus.REFUSE:
+        return EUserGroupStatus.INVITED;
+      case EUserGroupStatus.MEMBER:
+        return EUserGroupStatus.REMOVED
+      default:
+        return EUserGroupStatus.REMOVED
+    }
   }
 }
