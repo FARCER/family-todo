@@ -1,7 +1,19 @@
-<h2>Ваши группы</h2>
-<div class="groups">
-  <ad-group *ngFor="let group of groups" [model]="group"
-            (inviteUser)=inviteUser.emit($event);
-            (actionWithGroupUser)="actionWithGroupUser.emit($event)"
-            (deleteGroupEmit)="deleteGroup.emit($event)"></ad-group>
+<div class="my-groups" *ngIf="groups.length">
+  <h2>Ваши группы</h2>
+  <div class="my-groups__body">
+    <ad-group *ngFor="let group of groups" [model]="group"
+              (inviteUser)=inviteUser.emit($event);
+              (actionWithGroupUser)="actionWithGroupUser.emit($event)"
+              (deleteGroupEmit)="deleteGroup.emit($event)"></ad-group>
+  </div>
+</div>
+
+<div class="groups-where-i-member" *ngIf="groupsWhereIMember.length">
+  <h2>Вы состоите в следующих группах</h2>
+  <div class="groups-where-i-member__body">
+    <ad-groups-where-i-member
+      *ngFor="let group of groupsWhereIMember"
+      [group]="group"
+    ></ad-groups-where-i-member>
+  </div>
 </div>

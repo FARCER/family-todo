@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 import { GroupModel } from '../../models/group.model';
 import { IInviteUserEmit } from '../../interfaces/invite-user-emit.interface';
 import { IActionWithUserGroupEmit } from '../../interfaces/action-with-user-group-emit.interface';
+import { IGroupWhereIMember } from '../../interfaces/group-where-i-member.interface';
 
 @Component({
   selector: 'ad-my-groups',
@@ -15,7 +16,8 @@ export class MyGroupsComponent implements OnInit {
   @Output() public actionWithGroupUser: EventEmitter<IActionWithUserGroupEmit> = new EventEmitter<IActionWithUserGroupEmit>();
   @Output() public deleteGroup: EventEmitter<string> = new EventEmitter<string>();
 
-  @Input() public groups: GroupModel[];
+  @Input() public groups: GroupModel[] = [];
+  @Input() public groupsWhereIMember: IGroupWhereIMember[] = [];
 
   constructor() {
   }

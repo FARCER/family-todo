@@ -10,19 +10,13 @@
     </ng-container>
 
     <ad-my-groups
-      *ngIf="model.data.myGroups?.length"
+      *ngIf="hasGroups(model.data)"
       (inviteUser)="inviteUser($event)"
       (actionWithGroupUser)="actionWithGroupUser($event)"
       (deleteGroup)="deleteGroup($event)"
-      [groups]="model.data.myGroups"></ad-my-groups>
-
-    <div class="groups-where-i-member" *ngIf="model.data.groupsWhereIMember?.length">
-      <h2>Вы состоите в следующих группах</h2>
-      <ad-groups-where-i-member
-        *ngFor="let group of model.data.groupsWhereIMember"
-        [group]="group"
-      ></ad-groups-where-i-member>
-    </div>
+      [groups]="model.data.myGroups"
+      [groupsWhereIMember]="model.data.groupsWhereIMember"
+    ></ad-my-groups>
 
   </ng-container>
   <ui-preloader *ngIf="model.state === 'LOADING'"></ui-preloader>

@@ -4,12 +4,18 @@
   display: block;
 }
 
-h2 {
-  margin-bottom: $base-gutter * 2;
+.my-groups {
+  &__body {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -16px;
+  }
 }
 
-.groups {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 - 16px;
+.groups-where-i-member {
+  &__body {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -16px;
+  }
 }

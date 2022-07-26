@@ -58,6 +58,7 @@ export class GroupsComponent implements OnInit {
   }
 
   private acceptInvitation(id: string): void {
+    this.loader$.next(true);
     const data: any = {
       id,
       status: EUserGroupStatus.MEMBER,
@@ -71,6 +72,7 @@ export class GroupsComponent implements OnInit {
   }
 
   private refuseInvitation(id: string): void {
+    this.loader$.next(true);
     const data: any = {
       id,
       status: EUserGroupStatus.REFUSE
@@ -123,6 +125,10 @@ export class GroupsComponent implements OnInit {
         }
       )
     }
+  }
+
+  public hasGroups(model: GroupsModel): boolean {
+    return !!(model.groupsWhereIMember.length || model.myGroups.length)
   }
 
 }
