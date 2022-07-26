@@ -9,12 +9,12 @@
       </ad-my-invitation>
     </ng-container>
 
-    <div class="groups" *ngIf="model.data.myGroups?.length">
-      <ad-group *ngFor="let group of model.data.myGroups" [model]="group"
-                (inviteUser) = inviteUser($event);
-                (actionWithGroupUser)="actionWithGroupUser($event)"
-                (deleteGroupEmit)="deleteGroup($event)"></ad-group>
-    </div>
+    <ad-my-groups
+      *ngIf="model.data.myGroups?.length"
+      (inviteUser)="inviteUser($event)"
+      (actionWithGroupUser)="actionWithGroupUser($event)"
+      (deleteGroup)="deleteGroup($event)"
+      [groups]="model.data.myGroups"></ad-my-groups>
 
   </ng-container>
   <ui-preloader *ngIf="model.state === 'LOADING'"></ui-preloader>

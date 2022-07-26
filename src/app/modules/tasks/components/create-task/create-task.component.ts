@@ -1,10 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
-import { UserBdService } from '../../../../shared/services/bd/user-bd.service';
-import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
+import { FormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { TasksModel } from '../../models/tasks.model';
-import { EState } from '../../../../shared/enum/state.enum';
 
 @Component({
   selector: 'ad-create-task',
@@ -15,15 +11,12 @@ import { EState } from '../../../../shared/enum/state.enum';
 export class CreateTaskComponent implements OnInit {
 
   @Input() public model: TasksModel;
-  @Output() private reloadTasksList: EventEmitter<void> = new EventEmitter<void>();
+  @Output() private createTask: EventEmitter<string> = new EventEmitter<string>();
   public form: UntypedFormGroup;
 
   private isSubmitted: boolean = false;
 
-  constructor(
-    private dataBdService: DataBdService,
-    private userBdService: UserBdService
-  ) {
+  constructor() {
   }
 
   ngOnInit(): void {
@@ -32,26 +25,17 @@ export class CreateTaskComponent implements OnInit {
 
   private initForm(): void {
     this.form = new UntypedFormGroup({
-      title: new UntypedFormControl('', [Validators.required])
+      title: new FormControl<string>('', [Validators.required])
     })
   }
 
   public submit(): void {
     this.isSubmitted = true;
-    const data = {
-      title: this.form.value.title,
-      userId: this.userBdService.user?.id
-    }
+    const title: string = this.form.value.title;
     if (this.form.valid) {
-      this.model.state = EState.LOADING;
-      this.dataBdService.upsertData(data, EBdTables.TODOS).subscribe(
-        (res) => {
-          this.reloadTasksList.emit();
-          this.form.reset();
-          this.isSubmitted = false;
-          console.log(res)
-        }
-      )
+      this.createTask.emit(title);
+      this.form.reset();
+      this.isSubmitted = false;
     }
   }
 

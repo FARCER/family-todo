@@ -1,0 +1,7 @@
+<h2>Ваши группы</h2>
+<div class="groups">
+  <ad-group *ngFor="let group of groups" [model]="group"
+            (inviteUser)=inviteUser.emit($event);
+            (actionWithGroupUser)="actionWithGroupUser.emit($event)"
+            (deleteGroupEmit)="deleteGroup.emit($event)"></ad-group>
+</div>
