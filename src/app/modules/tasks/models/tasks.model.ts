@@ -1,7 +1,6 @@
-import { StateModel } from '../../../shared/models/state.model';
 import { TasksListModel } from './tasks-list.model';
 
-export class TasksModel extends StateModel {
+export class TasksModel {
 
   private _tasksList: TasksListModel;
 

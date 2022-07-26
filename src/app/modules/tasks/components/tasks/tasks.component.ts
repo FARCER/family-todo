@@ -1,12 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { BehaviorSubject, catchError, combineLatest, map, Observable, of, pluck, switchMap } from 'rxjs';
+import { BehaviorSubject, map, Observable, startWith, switchMap } from 'rxjs';
 import { TasksModel } from '../../models/tasks.model';
-import { DataBdService } from '../../../../shared/services/bd/data-bd.service';
-import { EBdTables } from '../../../../shared/enum/bd-tables.enum';
-import { EFilterType } from '../../../../shared/enum/filter-type.enum';
-import { ITask } from '../../interfaces/task.interface';
 import { EState } from '../../../../shared/enum/state.enum';
-import { TasksListModel } from '../../models/tasks-list.model';
+import { IModelWithState } from '../../../../shared/interfaces/model-with-state.interface';
+import { TasksService } from '../../services/tasks.service';
 
 @Component({
   selector: 'ad-tasks',
@@ -17,10 +14,11 @@ import { TasksListModel } from '../../models/tasks-list.model';
 export class TasksComponent implements OnInit {
 
   public reloadTasks$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  public tasks$: Observable<TasksModel>;
+  public loader$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public tasks$: Observable<IModelWithState<TasksModel>>;
 
   constructor(
-    private dataBdService: DataBdService) {
+    private tasksService: TasksService) {
   }
 
   public ngOnInit(): void {
@@ -28,30 +26,23 @@ export class TasksComponent implements OnInit {
   }
 
   private initModel(): void {
-    this.tasks$ = of(new TasksModel()).pipe(
-      switchMap((model: TasksModel) => combineLatest([this.reloadTasks$]).pipe(
-        switchMap(() => this.dataBdService.getData({
-          table: EBdTables.TODOS,
-          columns: 'title, isCompleted, userId',
-          filterField: 'userId',
-          filterType: EFilterType.ID
-        })),
-        pluck('data'),
-        map((res: any) => {
-          let tasks: ITask[] = res;
-          model.tasksList = new TasksListModel();
-          model.state = EState.READY;
-          if (tasks.length) {
-            model.tasksList.tasks = tasks
-          }
-          return model;
-        })
-      ))
+    this.tasks$ = this.reloadTasks$.pipe(
+      switchMap(() => this.tasksService.getTasksList()),
+      map((model: TasksModel) => {
+        this.loader$.next(false);
+        return { state: EState.READY, data: model }
+      }),
+      startWith({ state: EState.LOADING })
     )
   }
 
 
-  public createTask(): void {
-
+  public createTask(title: string): void {
+    this.loader$.next(true)
+    this.tasksService.createTask(title).subscribe(
+      () => {
+        this.reloadTasks$.next(null)
+      }
+    )
   }
 }

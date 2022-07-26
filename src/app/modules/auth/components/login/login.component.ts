@@ -60,7 +60,6 @@ export class LoginComponent implements OnInit {
       text: error.message,
       type: 'warning'
     })
-
   }
 
   public validateLoginFieldType(): boolean {
