@@ -8,7 +8,6 @@ import { CreateGroupComponent } from './components/create-group/create-group.com
 import { GroupComponent } from './components/group/group.component';
 import { MyInvitationComponent } from './components/my-invitation/my-invitation.component';
 import { SharedModule } from '../../shared/shared.module';
-import { GroupWhereYouMemberComponent } from './components/group-where-you-member/group-where-you-member.component';
 import { MyGroupsComponent } from './components/my-groups/my-groups.component';
 import { GroupsWhereIMemberComponent } from './components/groups-where-i-member/groups-where-i-member.component';
 
@@ -20,7 +19,6 @@ import { GroupsWhereIMemberComponent } from './components/groups-where-i-member/
     CreateGroupComponent,
     GroupComponent,
     MyInvitationComponent,
-    GroupWhereYouMemberComponent,
     MyGroupsComponent,
     GroupsWhereIMemberComponent
   ],

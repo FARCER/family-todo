@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { IGroupWhereIMember } from '../../interfaces/group-where-i-member.interface';
 
 @Component({
   selector: 'ad-groups-where-i-member',
@@ -7,6 +8,8 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GroupsWhereIMemberComponent implements OnInit {
+
+  @Input() public group: IGroupWhereIMember;
 
   constructor() {
   }

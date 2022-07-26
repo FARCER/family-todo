@@ -1,11 +1,13 @@
 import { StateModel } from '../../../shared/models/state.model';
 import { GroupModel } from './group.model';
 import { IMyInvitation } from '../interfaces/my-invitation.interface';
+import { IGroupWhereIMember } from '../interfaces/group-where-i-member.interface';
 
 export class GroupsModel extends StateModel {
 
   private _myGroups: GroupModel[];
   private _myInvitations: IMyInvitation[];
+  private _groupsWhereIMember: IGroupWhereIMember[];
 
   constructor() {
     super();
@@ -25,6 +27,14 @@ export class GroupsModel extends StateModel {
 
   public get myInvitations(): IMyInvitation[] {
     return this._myInvitations;
+  }
+
+  public set groupsWhereIMember(data: IGroupWhereIMember[]) {
+    this._groupsWhereIMember = data;
+  }
+
+  public get groupsWhereIMember(): IGroupWhereIMember[] {
+    return this._groupsWhereIMember;
   }
 
 

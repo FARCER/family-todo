@@ -52,7 +52,7 @@ export class GroupComponent implements OnInit {
   }
 
   public inviteToGroup(email: string): void {
-    this.inviteUser.emit({ email, groupId: this.model.id });
+    this.inviteUser.emit({ email, groupId: this.model.id, groupName: this.model.name });
   }
 
   public deleteGroup(model: GroupModel): void {

@@ -29,7 +29,6 @@ export class GroupsComponent implements OnInit {
 
   private user: IProfile;
 
-
   constructor(
     private localStorageService: LocalStorageService,
     private dataBdService: DataBdService,

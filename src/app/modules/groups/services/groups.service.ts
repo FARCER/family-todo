@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, map, Observable, pluck, switchMap } from 'rxjs';
+import { forkJoin, from, map, Observable, pluck, switchMap } from 'rxjs';
 import { IGroup } from '../interfaces/group.interface';
 import { EBdTables } from '../../../shared/enum/bd-tables.enum';
 import { EFilterType } from '../../../shared/enum/filter-type.enum';
@@ -14,6 +14,9 @@ import { IModelWithState } from '../../../shared/interfaces/model-with-state.int
 import { ELocalStorageKeys } from '../../../shared/enum/local-storage-keys.enum';
 import { IProfile } from '../../profile/interfaces/profile.interface';
 import { LocalStorageService } from '../../../shared/services/local-storage.service';
+import { GetSupabaseClientService } from '../../../shared/services/bd/get-supabase-client.service';
+import { IGroupWhereIMember } from '../interfaces/group-where-i-member.interface';
+import { IGetGroupInfoResponse } from '../interfaces/get-group-info-response.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +26,8 @@ export class GroupsService {
 
   constructor(
     private dataBdService: DataBdService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private getSupabaseClientService: GetSupabaseClientService
   ) {
     this.user = JSON.parse(this.localStorageService.getItem(ELocalStorageKeys.PROFILE));
   }
@@ -31,18 +35,19 @@ export class GroupsService {
   public getGroupsModel(): Observable<IModelWithState<GroupsModel>> {
     return forkJoin([
       this.getGroups(),
-      this.getInvitedGroups()
+      this.getInvitedGroups(),
+      this.getGroupsWhereIMember(),
     ]).pipe(
-      map(([groups, myInvitations]: [IGroup[], IMyInvitation[]]) => {
+      map(([groups, myInvitations, groupsWhereIMember]: [IGroup[], IMyInvitation[], IGroupWhereIMember[]]) => {
         const groupsModel: GroupsModel = new GroupsModel();
         groupsModel.myGroups = groups.map((group: IGroup) => new GroupModel(group));
         groupsModel.myInvitations = myInvitations;
+        groupsModel.groupsWhereIMember = groupsWhereIMember;
         groupsModel.state = EState.READY;
         return { state: EState.READY, data: groupsModel };
       })
     )
   }
-
 
   private getGroups(): Observable<IGroup[]> {
     return this.dataBdService.getData({
@@ -67,6 +72,16 @@ export class GroupsService {
     )
   }
 
+  private getGroupsWhereIMember(): Observable<any> {
+    return from(this.getSupabaseClientService.getSupabaseClient()
+      .from(EBdTables.GROUPS_USERS)
+      .select('author, groupName, id')
+      .eq('userId', this.user.id)
+      .eq('status', EUserGroupStatus.MEMBER)).pipe(
+      map((res: any) => res.data)
+    )
+  }
+
   public createGroup(groupName: string): Observable<any> {
     const data = {
       creatorName: this.user.name,
@@ -74,13 +89,14 @@ export class GroupsService {
       name: groupName,
     }
     return this.dataBdService.upsertData(data, EBdTables.GROUPS).pipe(
-      switchMap((res: any) => this.updateUserGroupsTable(res.data.id))
+      switchMap((res: any) => this.updateUserGroupsTable(res.data))
     )
   }
 
-  private updateUserGroupsTable(id: string) {
+  private updateUserGroupsTable(groupInfo: IGetGroupInfoResponse) {
     const data = {
-      groupId: id,
+      groupId: groupInfo.id,
+      groupName: groupInfo.name,
       userId: this.user.id,
       author: this.user.name,
       email: this.user.email,

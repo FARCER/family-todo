@@ -27,7 +27,7 @@ export class GroupService {
     this.user = JSON.parse(this.localStorageService.getItem(ELocalStorageKeys.PROFILE));
   }
 
-  public inviteUserToGroup({ email, groupId }: IInviteUserEmit): Observable<GroupModel> {
+  public inviteUserToGroup({ email, groupId, groupName }: IInviteUserEmit): Observable<GroupModel> {
     return this.getUserId(email).pipe(
       switchMap((userId: string) => {
         const data = {
@@ -35,6 +35,7 @@ export class GroupService {
           email,
           author: this.user.name,
           userId,
+          groupName
         }
         return this.dataBdService.createData(data, EBdTables.GROUPS_USERS)
       }),
